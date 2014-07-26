@@ -1,0 +1,6 @@
+{
+  "name": "branta",
+  "dependencies": {
+    "octicons": "2.1.0"
+  }
+}

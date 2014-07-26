@@ -1,0 +1,18 @@
+#!/bin/sh
+# Run the server.
+
+set -e
+
+test -z "$RACK_ENV" && RACK_ENV="development"
+
+script/bootstrap
+
+script/setup
+
+if [ "$RACK_ENV" != "production" ]; then
+  pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+fi
+
+echo "==> Running on http://0.0.0.0:5000/ …"
+
+rerun foreman start

@@ -1,0 +1,8 @@
+<% if defined?(Devise) %>
+  <% if user_signed_in? %>
+    <p><%= current_user.client.login %></p>
+  <% else %>
+    <h1>Welcome#index</h1>
+    <p>Find me in app/views/welcome/index.html.erb</p>
+  <% end %>
+<% end %>
