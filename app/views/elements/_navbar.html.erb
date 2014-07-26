@@ -29,7 +29,7 @@
           </li>
         <% else %>
           <li>
-            <%= link_to(("Sign in with " + content_tag(:span, "", :class => "octicon octicon-mark-github")).html_safe, user_omniauth_authorize_path(:github) ) %>
+            <%= link_to(("Sign in with " + octicon("mark-github")).html_safe, user_omniauth_authorize_path(:github) ) %>
           </li>
         <% end %>
       <% end %>
