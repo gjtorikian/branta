@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  get 'welcome/index'
+  get 'site/index'
 
   # You can have the root of your site routed with "root"
-  root 'welcome#index'
+  root 'site#index'
 
   devise_for :users, controllers: { :omniauth_callbacks => "users/omniauth_callbacks", registrations: "users/registrations", sessions: "users/sessions", passwords: "users/passwords"}, skip: [:sessions, :registrations]
   # The priority is based upon order of creation: first created -> highest priority.
