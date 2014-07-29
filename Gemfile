@@ -54,6 +54,7 @@ group :test do
   gem 'miniskirt'
   gem 'capybara'
   gem 'mocha', '~> 1.1.0'
+  gem 'webmock', '~> 1.18'
 end
 
 gem 'simple_form'

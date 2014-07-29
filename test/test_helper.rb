@@ -13,6 +13,7 @@ require 'action_controller/test_case'
 require 'miniskirt'
 require 'capybara/rails'
 require 'mocha'
+require 'webmock/minitest'
 
 # Support files
 Dir["#{File.expand_path(File.dirname(__FILE__))}/support/*.rb"].each do |file|
@@ -23,7 +24,7 @@ end
 class MiniTest::Spec
   include ActiveSupport::Testing::SetupAndTeardown
 
-  # alias :method_name :__name__ if defined? :__name__
+  WebMock.disable_net_connect!(allow_localhost: true)
 end
 
 
