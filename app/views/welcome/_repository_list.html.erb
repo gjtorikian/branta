@@ -1,0 +1,5 @@
+<% unless current_user.client.repositories.empty? %>
+  <%= current_user.client.repositories %>
+<% else %>
+  <h1>You have no repositories!</h1>
+<% end %>
