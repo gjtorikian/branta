@@ -1,2 +1,8 @@
 #!/bin/sh
+
 bundle install --binstubs --local --path vendor/gems
+
+echo "==> Updating databases…"
+
+rake db:create
+rake db:migrate
