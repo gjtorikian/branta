@@ -1,5 +1,21 @@
 <% unless current_user.client.repositories.empty? %>
-  <%= current_user.client.repositories %>
+  <% @pages_repos = PagesRepository.new(current_user.client.repositories).pages_repos %>
+  <% if @pages_repos.empty? %>
+    <h1>You have repositories, but none of them have GitHub Pages!</h1>
+  <% else %>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Activated?</th>
+      </tr>
+    <% @pages_repos.each do |repo| %>
+      <tr>
+        <td><%= repo["name"] %></td>
+        <td>Nope!</td>
+      </tr>
+    <% end %>
+    </table>
+  <% end %>
 <% else %>
   <h1>You have no repositories!</h1>
 <% end %>
