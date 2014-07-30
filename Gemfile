@@ -72,6 +72,5 @@ gem 'tzinfo-data'
 group :development do
   gem 'better_errors'
   gem 'foreman', '~> 0.71'
-  gem 'rerun', '~> 0.10'
   gem 'dotenv-rails'
 end
