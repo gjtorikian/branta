@@ -10,20 +10,38 @@ require 'minitest/autorun'
 require 'minitest/focus'
 require 'action_controller/test_case'
 
-require 'miniskirt'
+require 'factories/user'
 require 'capybara/rails'
 require 'mocha'
+require 'webmock/minitest'
 
 # Support files
 Dir["#{File.expand_path(File.dirname(__FILE__))}/support/*.rb"].each do |file|
   require file
 end
 
+DatabaseCleaner.strategy = :truncation
 
 class MiniTest::Spec
   include ActiveSupport::Testing::SetupAndTeardown
 
-  # alias :method_name :__name__ if defined? :__name__
+  WebMock.disable_net_connect!(allow_localhost: true)
+
+  def fixture(name, extension="json")
+    File.read(Rails.root.join('test', 'fixtures', "#{name}.#{extension}"))
+  end
+
+  def json_fixture(name)
+    ActiveSupport::JSON.decode(fixture(name))
+  end
+
+  before :each do
+    DatabaseCleaner.start
+  end
+
+  after :each do
+    DatabaseCleaner.clean
+  end
 end
 
 
@@ -41,16 +59,32 @@ end
 #   e.g. describe TestController do ...
 MiniTest::Spec.register_spec_type( /Controller$/, ControllerSpec )
 
-
 class AcceptanceSpec < MiniTest::Spec
   include Rails.application.routes.url_helpers
   include Capybara::DSL
+  include Warden::Test::Helpers
+  Warden.test_mode!
 
   before do
     @routes = Rails.application.routes
   end
+
+  after do
+    Warden.test_reset!
+  end
+
+  def sign_in(user)
+    login_as(user, scope: :user)
+    visit('/')
+  end
+
+  def sign_out
+    logout(:user)
+  end
+
+  def default_url_options
+    Rails.configuration.action_mailer.default_url_options
+  end
 end
 
-# Test subjects ending with 'Integration' are treated as acceptance/integration tests
-#   e.g. describe 'Test system Integration' do ...
 MiniTest::Spec.register_spec_type( /Integration$/, AcceptanceSpec )

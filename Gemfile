@@ -43,17 +43,18 @@ gem "octokit", "~> 3.0"
 
 gem 'bundler'
 
-group :development, :test do
-end
+gem 'awesome_print'
 
 group :test do
   gem 'minitest-rails'
   gem 'minitest-focus'
   gem 'shoulda-matchers'
   gem 'database_cleaner'
-  gem 'miniskirt'
+  gem 'minifacture'
   gem 'capybara'
+  gem 'capybara_minitest_spec'
   gem 'mocha', '~> 1.1.0'
+  gem 'webmock', '~> 1.18'
 end
 
 gem 'simple_form'
