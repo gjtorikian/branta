@@ -1,17 +1,27 @@
 <% unless current_user.client.repositories.empty? %>
-  <% @pages_repos = PagesRepository.new(current_user.client.repositories).pages_repos %>
+  <% @page_repo_obj = PagesRepository.new(current_user.client.repositories) %>
+  <% @pages_repos = @page_repo_obj.pages_repos %>
   <% if @pages_repos.empty? %>
     <h1>You have repositories, but none of them have GitHub Pages!</h1>
   <% else %>
-    <table class="table table-bordered table-striped table-hover">
+    <table class="repo-list table table-bordered table-striped table-hover">
       <tr>
         <th>Name</th>
-        <th>Activated?</th>
+        <th>Has search?</th>
+        <th>Set up search</th>
       </tr>
     <% @pages_repos.each do |repo| %>
+      <% @has_hook = @page_repo_obj.has_hook_to_granta?(current_user.client, repo["full_name"]) %>
       <tr>
         <td><%= repo["name"] %></td>
-        <td>Nope!</td>
+        <td><%= @has_hook ? octicon("check") : octicon("x") %></td>
+        <td>
+          <% unless @has_hook %>
+            <button type="button" class="btn btn-default"><%= octicon("zap") %> Let's do it!</button>
+          <% else %>
+            <button type="button" class="btn btn-default"><%= octicon("x") %> Take it off, please!</button>
+          <% end %>
+        </td>
       </tr>
     <% end %>
     </table>
