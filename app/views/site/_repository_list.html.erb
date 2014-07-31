@@ -11,7 +11,7 @@
         <th>Set up search</th>
       </tr>
     <% @pages_repos.each do |repo| %>
-      <% @has_hook = @page_repo_obj.has_hook_to_granta?(current_user.client, repo["full_name"]) %>
+      <% @has_hook = @page_repo_obj.has_hook_to_granta? current_user.client.hooks(repo["full_name"]) %>
       <tr>
         <td><%= repo["name"] %></td>
         <td><%= @has_hook ? octicon("check") : octicon("x") %></td>
