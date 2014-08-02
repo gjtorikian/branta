@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  post 'webhook/create'
+
   get 'site/index'
 
   # You can have the root of your site routed with "root"
