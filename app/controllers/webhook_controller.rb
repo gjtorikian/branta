@@ -11,9 +11,9 @@ class WebhookController < ApplicationController
         :events => ['page_build'],
         :active => true
       }
-      result = current_user.client.create_hook(repo_name, "web", config, options)
+      result = create_hook(repo_name, config, options)
 
-      PagesRepository.new(name_with_owner: repo_name, hook_id: result.id).save!
+      PagesRepository.new(name_with_owner: repo_name, hook_id: result[:id]).save!
 
       format.json  { head :no_content }
     end
@@ -25,7 +25,7 @@ class WebhookController < ApplicationController
 
       page_repository = PagesRepository.find_by_name_with_owner(repo_name)
 
-      current_user.client.remove_hook(repo_name, page_repository.hook_id)
+      remove_hook(repo_name, page_repository.hook_id)
 
       page_repository.destroy
 
@@ -35,6 +35,14 @@ class WebhookController < ApplicationController
 
 
   private
+
+    def create_hook(repo_name, config, options)
+      current_user.client.create_hook(repo_name, "web", config, options)
+    end
+
+    def remove_hook(repo_name, id)
+      current_user.client.remove_hook(repo_name, id)
+    end
 
     def pages_repository_params
       params.required(:pages_repository).permit(:name_with_owner, :hook_id)

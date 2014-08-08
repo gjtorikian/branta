@@ -1,9 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  name_with_owner: MyString
-  hook_id: 1
-
-two:
-  name_with_owner: MyString
-  hook_id: 1

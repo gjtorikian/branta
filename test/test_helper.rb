@@ -10,13 +10,17 @@ require 'minitest/autorun'
 require 'minitest/focus'
 require 'action_controller/test_case'
 
-require 'factories/user'
 require 'capybara/rails'
 require 'mocha'
 require 'webmock/minitest'
 
 # Support files
 Dir["#{File.expand_path(File.dirname(__FILE__))}/support/*.rb"].each do |file|
+  require file
+end
+
+# Factoris
+Dir["#{File.expand_path(File.dirname(__FILE__))}/factories/*.rb"].each do |file|
   require file
 end
 
@@ -52,6 +56,18 @@ class ControllerSpec < MiniTest::Spec
 
   before do
     @routes = Rails.application.routes
+  end
+
+  def stub_gh_hook_creation(json)
+    stub_request(:get, "https://api.github.com/repos/octocat/Page-World/hooks?per_page=100").
+      with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'token secrets1', 'User-Agent'=>'Octokit Ruby Gem 3.2.0'}).
+      to_return(:status => 200, :body => json, :headers => {})
+  end
+
+  def stub_gh_hook_deletion(json)
+    stub_request(:get, "https://api.github.com/repos/octocat/Page-World/hooks?per_page=100").
+      with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'token secrets1', 'User-Agent'=>'Octokit Ruby Gem 3.2.0'}).
+      to_return(:status => 200, :body => json, :headers => {})
   end
 end
 
