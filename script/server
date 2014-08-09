@@ -5,10 +5,6 @@ set -e
 
 test -z "$RACK_ENV" && RACK_ENV="development"
 
-script/bootstrap
-
-script/setup
-
 if [ "$RACK_ENV" != "production" ]; then
   pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
 fi

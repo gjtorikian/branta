@@ -5,3 +5,18 @@
 body#main {
   background-color: white;
 }
+
+table.repo-list {
+
+  span.octicon-x {
+    color: red;
+  }
+
+  span.octicon-check {
+    color: green;
+  }
+
+  span.octicon-zap {
+    color: #ff8c00;
+  }
+}

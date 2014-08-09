@@ -1,9 +1,13 @@
-class PagesRepository
-  def initialize(payload)
-    @repos = payload
+require 'uri'
+
+class PagesRepository < ActiveRecord::Base
+  validates_presence_of :name_with_owner
+
+  def self.pages_repos(payload)
+    payload.select { |repo| repo["name"] =~ /page/i }
   end
 
-  def pages_repos
-    @pages_repos ||= @repos.select { |repo| repo["name"] =~ /page/i }
+  def self.has_hook_to_granta?(repo_name)
+    !PagesRepository.find_by_name_with_owner(repo_name).nil?
   end
 end

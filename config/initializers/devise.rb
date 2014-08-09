@@ -4,7 +4,7 @@ Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.
-  # config.secret_key = '58634457a735521582460fdacd6756a3d6afaa2080084216d28e94e4d3fdf3039785f4934dc9e0c9f9888c0121822e33d393019d9951658eb19765f70b85787d'
+  config.secret_key = '58634457a735521582460fdacd6756a3d6afaa2080084216d28e94e4d3fdf3039785f4934dc9e0c9f9888c0121822e33d393019d9951658eb19765f70b85787d'
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
@@ -232,7 +232,7 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  config.omniauth :github, ENV['GITHUB_BRANTA_CLIENT_ID'], ENV['GITHUB_BRANTA_CLIENT_SECRET'], scope: 'user,public_repo'
+  config.omniauth :github, ENV['GITHUB_BRANTA_CLIENT_ID'], ENV['GITHUB_BRANTA_CLIENT_SECRET'], scope: 'public_repo,write:repo_hook'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
