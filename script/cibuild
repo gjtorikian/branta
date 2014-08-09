@@ -9,6 +9,7 @@ set +x
 export RACK_ENV=test
 export RAILS_ENV=test
 
+bundle exec rake db:create
 bundle exec rake db:migrate
 bundle exec rake assets:precompile
 bundle exec rake test
