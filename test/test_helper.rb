@@ -14,6 +14,8 @@ require 'capybara/rails'
 require 'mocha'
 require 'webmock/minitest'
 
+require "warden/github/rails/test_helpers"
+
 # Support files
 Dir["#{File.expand_path(File.dirname(__FILE__))}/support/*.rb"].each do |file|
   require file
@@ -29,6 +31,7 @@ DatabaseCleaner.strategy = :truncation
 class MiniTest::Spec
   include ActiveSupport::Testing::SetupAndTeardown
   include MetaHelper
+  include WardenHelpers
 
   WebMock.disable_net_connect!(allow_localhost: true)
 
@@ -53,7 +56,6 @@ end
 class ControllerSpec < MiniTest::Spec
   include Rails.application.routes.url_helpers
   include ActionController::TestCase::Behavior
-  include Devise::TestHelpers
 
   before do
     @routes = Rails.application.routes

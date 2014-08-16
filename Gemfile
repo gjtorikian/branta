@@ -7,9 +7,7 @@ gem 'pg', '~> 0.17.1'
 gem 'turbolinks'
 gem 'unicorn'
 gem "octokit", "~> 3.0"
-gem 'devise', '~> 3.2'
-gem 'omniauth', '~> 1.2'
-gem 'omniauth-github', '~> 1.1'
+gem "warden-github-rails", "1.1.0"
 gem "resque", '~> 1.25'
 gem "resque-lock-timeout", '~> 0.4'
 
@@ -26,6 +24,7 @@ gem 'awesome_print'
 gem 'bundler'
 
 group :test do
+  gem 'factory_girl'
   gem 'minitest-rails'
   gem 'minitest-focus'
   gem 'shoulda-matchers'
