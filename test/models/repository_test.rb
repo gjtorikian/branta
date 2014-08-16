@@ -4,7 +4,7 @@ describe Repository do
   it "creates simple repositories" do
     repository = Repository.create :name => "branta", :owner => "gjtorikian"
 
-    expect(repository).to be_valid
-    expect(repository).to be_active
+    repository.valid?.must_equal true
+    repository.active?.must_equal true
   end
 end

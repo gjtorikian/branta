@@ -10,6 +10,8 @@ gem "octokit", "~> 3.0"
 gem 'devise', '~> 3.2'
 gem 'omniauth', '~> 1.2'
 gem 'omniauth-github', '~> 1.1'
+gem "resque", '~> 1.25'
+gem "resque-lock-timeout", '~> 0.4'
 
 # assets stuff
 gem 'sass-rails', '~> 4.0.3'

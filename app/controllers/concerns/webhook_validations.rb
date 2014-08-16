@@ -35,12 +35,12 @@ module WebhookValidations
       end
 
       def hook_source_ips
-        if addresses = Heaven.redis.get(source_key)
+        if addresses = Branta.redis.get(source_key)
           JSON.parse(addresses)
         else
           addresses = oauth_client_api.get("/meta").hooks
-          Heaven.redis.set(source_key, JSON.dump(addresses))
-          Heaven.redis.expire(source_key, default_ttl)
+          Branta.redis.set(source_key, JSON.dump(addresses))
+          Branta.redis.expire(source_key, default_ttl)
           Rails.logger.info "Refreshed GitHub hook sources"
           addresses
         end

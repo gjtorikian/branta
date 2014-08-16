@@ -1,7 +1,7 @@
-require "spec_helper"
+require "test_helper"
 
 describe WebhookValidations do
-  class WebhookValidationsTester
+  class WebhookValidationsTester < WebhookValidations::Validator
     class Request
       def initialize(ip)
         @ip = ip
@@ -19,18 +19,22 @@ describe WebhookValidations do
     end
   end
 
-  it "makes methods available" do
-    klass = WebhookValidationsTester.new("192.30.252.41")
-    expect(klass).to be_valid_incoming_webhook_address
-    klass = WebhookValidationsTester.new("127.0.0.1")
-    expect(klass).to_not be_valid_incoming_webhook_address
+  before :each do
+    stub_meta
   end
 
-  context "verifies IPs" do
+  it "makes methods available" do
+    klass = WebhookValidationsTester.new("192.30.252.41")
+    klass.valid?.must_equal true
+    klass = WebhookValidationsTester.new("127.0.0.1")
+    klass.valid?.must_equal false
+  end
+
+  describe "verifies IPs" do
     it "returns production" do
-      expect(WebhookValidations::Validator.new("127.0.0.1")).to_not be_valid
-      expect(WebhookValidations::Validator.new("192.30.252.41")).to be_valid
-      expect(WebhookValidations::Validator.new("192.30.252.46")).to be_valid
+      WebhookValidations::Validator.new("127.0.0.1").valid?.must_equal false
+      WebhookValidations::Validator.new("192.30.252.41").valid?.must_equal true
+      WebhookValidations::Validator.new("192.30.252.46").valid?.must_equal true
     end
   end
 end
