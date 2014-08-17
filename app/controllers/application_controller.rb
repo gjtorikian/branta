@@ -7,6 +7,10 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :null_session
 
+  def index
+    @pages_builds = PagesBuild.limit(50).reverse_order
+  end
+
   def basic_auth!
     unless basic_authenticated?
       render :status => :forbidden, :text => "Not authorized"

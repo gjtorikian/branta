@@ -6,17 +6,14 @@ body#main {
   background-color: white;
 }
 
-table.repo-list {
+.octicon-x {
+  color: red;
+}
 
-  span.octicon-x {
-    color: red;
-  }
+.octicon-check {
+  color: green;
+}
 
-  span.octicon-check {
-    color: green;
-  }
-
-  span.octicon-zap {
-    color: #ff8c00;
-  }
+.octicon-zap {
+  color: #ffc323;
 }

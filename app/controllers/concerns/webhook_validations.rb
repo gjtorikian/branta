@@ -20,6 +20,7 @@ module WebhookValidations
     end
 
     def valid?
+      return true if Rails.env.development?
       hook_source_ips.any? { |block| IPAddr.new(block).include?(ip) }
     end
 

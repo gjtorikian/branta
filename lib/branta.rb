@@ -1,2 +1,2 @@
 require 'branta/version'
-require 'branta/jobs/pages_index'
+require 'branta/jobs/index'

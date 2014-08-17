@@ -13,7 +13,7 @@ class WebhookController < ApplicationController
       data = request.body.read
 
       Resque.enqueue(Receiver, event, delivery, data)
-      render :status => 201, :json => "{}"
+      render :status => 200, :json => "{}"
     else
       render :status => 404, :json => "{}"
     end
