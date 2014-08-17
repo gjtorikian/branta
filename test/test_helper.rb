@@ -43,6 +43,19 @@ class MiniTest::Spec
     ActiveSupport::JSON.decode(fixture(name))
   end
 
+  def default_headers(event, remote_ip = "192.30.252.41")
+    {
+      'ACCEPT'                 => 'application/json' ,
+      'CONTENT_TYPE'           => 'application/json',
+
+      'REMOTE_ADDR'            => remote_ip,
+      'HTTP_X_FORWARDED_FOR'   => remote_ip,
+
+      'HTTP_X_GITHUB_EVENT'    => event,
+      'HTTP_X_GITHUB_DELIVERY' => SecureRandom.uuid
+    }
+  end
+
   before :each do
     DatabaseCleaner.start
   end

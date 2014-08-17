@@ -29,7 +29,7 @@ module Branta
       end
 
       def self.perform(guid, payload)
-
+        ap "performing?"
       end
     end
   end

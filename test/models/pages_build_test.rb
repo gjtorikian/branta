@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe PagesBuild do
-  let(:payload) { fixture('pagebuild') }
+  let(:payload) { fixture('pagebuild-success') }
   let(:data) { JSON.parse(payload)['payload'] }
 
   let(:create_data) {
