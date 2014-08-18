@@ -33,7 +33,8 @@ class MiniTest::Spec
   include MetaHelper
   include WardenHelpers
 
-  WebMock.disable_net_connect!(allow_localhost: true)
+  # allow connections to elasticsearch
+  WebMock.disable_net_connect!(:allow => /branta_application/)
 
   def fixture(name, extension="json")
     File.read(Rails.root.join('test', 'fixtures', "#{name}.#{extension}"))
@@ -54,6 +55,10 @@ class MiniTest::Spec
       'HTTP_X_GITHUB_EVENT'    => event,
       'HTTP_X_GITHUB_DELIVERY' => SecureRandom.uuid
     }
+  end
+
+  def octokit_version
+    Gem.loaded_specs['octokit'].version
   end
 
   before :each do

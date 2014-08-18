@@ -12,12 +12,13 @@ class WebhookController < ApplicationController
       request.body.rewind
       data = request.body.read
 
+      data = JSON.parse(data)
       unless data["build"]["status"] == "built"
-        render :status => 406, :json => "{}"
+        redirect_to :status => 406, :json => "{}" and return;
       end
 
       Resque.enqueue(Receiver, event, delivery, data)
-      render :status => 200, :json => "{}"
+      render :status => 201, :json => "{}"
     else
       render :status => 404, :json => "{}"
     end

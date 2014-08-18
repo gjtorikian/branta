@@ -9,7 +9,9 @@ Branta::Application.routes.draw do
   get "/logout"                => "sessions#destroy"
 
   # Callbacks from webhooks
-  post "/post_receive"          => "webhook#create"
+  post "/post_receive"         => "webhook#create"
+
+  get "/search"                => "search#index"
 
   # You can have the root of your site routed with "root"
   root 'site#index'
