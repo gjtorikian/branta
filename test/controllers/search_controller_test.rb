@@ -119,4 +119,18 @@ describe SearchController do
       result["title"].must_equal "item 3 of five entries"
     end
   end
+
+  describe 'sorting' do
+    it 'properly sorts the results' do
+      get 'index', {:q => "administrate", :sort => "updated_at", :order => "desc"}
+
+      assert_response response.status, 200
+      body = JSON.parse(response.body)
+      body["total"].must_equal 5
+      body["results"].length.must_equal 5
+
+      result = body["results"].first
+      result["title"].must_equal "item 4 of five entries"
+    end
+  end
 end

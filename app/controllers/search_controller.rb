@@ -5,6 +5,8 @@ class SearchController < ApplicationController
   def index
     per_page = ENV['BRANTA_PER_PAGE_COUNT'].to_i < 1 ? 25 : ENV['BRANTA_PER_PAGE_COUNT'].to_i
     page  = [ params[:page].to_i, 1 ].max
+    sort  = params[:sort] || '_score'
+    order  = params[:order] || 'desc'
 
     query = { query: {
               multi_match: {
@@ -21,6 +23,7 @@ class SearchController < ApplicationController
                 body:  { fragment_size: 160 }
               }
             },
+            sort: [{sort.to_sym => {:order => order}}],
             size: per_page,
             from: per_page * ( page - 1 )
           }
