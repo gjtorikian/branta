@@ -14,9 +14,21 @@ describe SearchController do
     Page.gateway.refresh_index!
   end
 
+  # there seems to be some kind of timing issue on Travis, and the only fix is to
+  # explicitly ask for the sort and order
+  def make_request(q, p = nil, s = nil, o = nil)
+    if ENV['IS_CI']
+      sort = s || "created_at"
+      order = 0 || "asc"
+      get 'index', {:q => q, :page => p, :sort => sort, :order => o}
+    else
+      get 'index', {:q => q, :page => p, :sort => s, :order => o}
+    end
+  end
+
   describe 'results in the body' do
     it 'can find results in the body' do
-      get 'index', {:q => "administrate"}
+      make_request("administrate")
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -30,7 +42,7 @@ describe SearchController do
     end
 
     it 'can take singular words and match plural words in the body' do
-      get 'index', {:q => "market"}
+      make_request("market")
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -41,7 +53,7 @@ describe SearchController do
     end
 
     it 'can take plural words and match singular words in the body' do
-      get 'index', {:q => "visualizes"}
+      make_request("visualizes")
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -54,7 +66,7 @@ describe SearchController do
 
   describe 'results in the title' do
     it 'can find results in the title' do
-      get 'index', {:q => "item"}
+      make_request("item")
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -68,7 +80,7 @@ describe SearchController do
     end
 
     it 'can take singular words and match plural words in the title' do
-      get 'index', {:q => "entry"}
+      make_request("entry")
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -79,7 +91,7 @@ describe SearchController do
     end
 
     it 'can take plural words and match singular words in the title' do
-      get 'index', {:q => "items"}
+      make_request("items")
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -100,7 +112,7 @@ describe SearchController do
     end
 
     it 'limits the results' do
-      get 'index', {:q => "administrate"}
+      make_request("administrate")
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -109,7 +121,7 @@ describe SearchController do
     end
 
     it 'can get a page of results' do
-      get 'index', {:q => "administrate", :page => 4}
+      make_request("administrate", 4)
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -122,7 +134,7 @@ describe SearchController do
 
   describe 'sorting' do
     it 'properly sorts the results' do
-      get 'index', {:q => "administrate", :sort => "updated_at", :order => "desc"}
+      make_request("administrate", nil, "updated_at", "desc")
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
