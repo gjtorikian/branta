@@ -1,7 +1,6 @@
 language: ruby
 rvm:
-  - 1.9.3
-  - 2.0
+  - 2.1
 script:
   - script/cibuild
 env:
@@ -9,3 +8,4 @@ env:
    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
 services:
   - redis-server
+  - elasticsearch
