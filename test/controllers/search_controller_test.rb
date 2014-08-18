@@ -95,6 +95,10 @@ describe SearchController do
       ENV['BRANTA_PER_PAGE_COUNT'] = '1'
     end
 
+    teardown do
+      ENV['BRANTA_PER_PAGE_COUNT'] = ''
+    end
+
     it 'limits the results' do
       get 'index', {:q => "administrate"}
 
