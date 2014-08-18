@@ -1,0 +1,13 @@
+<% view = PagesBuilds::IndexView.new(@pages_builds) %>
+
+<% if view.pages_builds.empty? %>
+  <h1>No Pages sites have been indexed...yet.</h1>
+<% else %>
+  <table>
+  <% view.pages_builds.each do |pages_build| %>
+    <tr>
+      <td><%= pages_build %> </td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>

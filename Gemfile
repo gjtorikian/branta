@@ -6,10 +6,14 @@ gem 'rails', '4.1.4'
 gem 'pg', '~> 0.17.1'
 gem 'turbolinks'
 gem 'unicorn'
-gem "octokit", "~> 3.0"
-gem 'devise', '~> 3.2'
-gem 'omniauth', '~> 1.2'
-gem 'omniauth-github', '~> 1.1'
+gem "octokit"
+gem "warden-github-rails", "1.1.0"
+gem "resque", '~> 1.25'
+gem "resque-lock-timeout", '~> 0.4'
+gem 'elasticsearch-model', '~> 0.1'
+gem 'elasticsearch-persistence', '~> 0.1'
+gem 'nokogiri', '~> 1.6'
+gem 'pismo', '~> 0.7.4'
 
 # assets stuff
 gem 'sass-rails', '~> 4.0.3'
@@ -18,10 +22,6 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'jquery-rails'
 gem 'bootstrap-sass', '~> 3.2'
 gem 'bootstrap-sass-extras'
-
-# debuggy stuff
-gem 'awesome_print'
-gem 'bundler'
 
 group :test do
   gem 'minitest-rails'
@@ -40,4 +40,9 @@ group :development do
   gem 'foreman', '~> 0.71'
   gem 'dotenv-rails'
   gem 'rerun', "~> 0.10"
+end
+
+group :test, :development do
+  gem 'awesome_print'
+  gem 'bundler'
 end

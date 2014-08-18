@@ -14,12 +14,14 @@ require 'capybara/rails'
 require 'mocha'
 require 'webmock/minitest'
 
+require "warden/github/rails/test_helpers"
+
 # Support files
 Dir["#{File.expand_path(File.dirname(__FILE__))}/support/*.rb"].each do |file|
   require file
 end
 
-# Factoris
+# Factories
 Dir["#{File.expand_path(File.dirname(__FILE__))}/factories/*.rb"].each do |file|
   require file
 end
@@ -28,8 +30,11 @@ DatabaseCleaner.strategy = :truncation
 
 class MiniTest::Spec
   include ActiveSupport::Testing::SetupAndTeardown
+  include MetaHelper
+  include WardenHelpers
 
-  WebMock.disable_net_connect!(allow_localhost: true)
+  # allow connections to elasticsearch
+  WebMock.disable_net_connect!(:allow => /branta_application/)
 
   def fixture(name, extension="json")
     File.read(Rails.root.join('test', 'fixtures', "#{name}.#{extension}"))
@@ -37,6 +42,23 @@ class MiniTest::Spec
 
   def json_fixture(name)
     ActiveSupport::JSON.decode(fixture(name))
+  end
+
+  def default_headers(event, remote_ip = "192.30.252.41")
+    {
+      'ACCEPT'                 => 'application/json' ,
+      'CONTENT_TYPE'           => 'application/json',
+
+      'REMOTE_ADDR'            => remote_ip,
+      'HTTP_X_FORWARDED_FOR'   => remote_ip,
+
+      'HTTP_X_GITHUB_EVENT'    => event,
+      'HTTP_X_GITHUB_DELIVERY' => SecureRandom.uuid
+    }
+  end
+
+  def octokit_version
+    Gem.loaded_specs['octokit'].version
   end
 
   before :each do
@@ -52,22 +74,9 @@ end
 class ControllerSpec < MiniTest::Spec
   include Rails.application.routes.url_helpers
   include ActionController::TestCase::Behavior
-  include Devise::TestHelpers
 
   before do
     @routes = Rails.application.routes
-  end
-
-  def stub_gh_hook_creation(json)
-    stub_request(:get, "https://api.github.com/repos/octocat/Page-World/hooks?per_page=100").
-      with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'token secrets1', 'User-Agent'=>'Octokit Ruby Gem 3.2.0'}).
-      to_return(:status => 200, :body => json, :headers => {})
-  end
-
-  def stub_gh_hook_deletion(json)
-    stub_request(:get, "https://api.github.com/repos/octocat/Page-World/hooks?per_page=100").
-      with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'token secrets1', 'User-Agent'=>'Octokit Ruby Gem 3.2.0'}).
-      to_return(:status => 200, :body => json, :headers => {})
   end
 end
 
@@ -100,26 +109,6 @@ class AcceptanceSpec < MiniTest::Spec
 
   def default_url_options
     Rails.configuration.action_mailer.default_url_options
-  end
-
-  def stub_gh_repo_request(json)
-    stub_request(:get, "https://api.github.com/user/repos?per_page=100").
-      with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'token secrets1', 'User-Agent'=>'Octokit Ruby Gem 3.2.0'}).
-      to_return(:status => 200, :body => json, :headers => {})
-  end
-
-  def stub_gh_hook_request(json)
-    stub_request(:get, "https://api.github.com/repos/octocat/Hello-World/hooks?per_page=100").
-      with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'token secrets1', 'User-Agent'=>'Octokit Ruby Gem 3.2.0'}).
-      to_return(:status => 200, :body => "", :headers => {})
-
-    stub_request(:get, "https://api.github.com/repos/octocat/Hola-World/hooks?per_page=100").
-      with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'token secrets1', 'User-Agent'=>'Octokit Ruby Gem 3.2.0'}).
-      to_return(:status => 200, :body => "", :headers => {})
-
-    stub_request(:get, "https://api.github.com/repos/octocat/Page-World/hooks?per_page=100").
-      with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>'token secrets1', 'User-Agent'=>'Octokit Ruby Gem 3.2.0'}).
-      to_return(:status => 200, :body => json, :headers => {})
   end
 end
 

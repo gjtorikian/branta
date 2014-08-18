@@ -9,6 +9,12 @@ set +x
 export RACK_ENV=test
 export RAILS_ENV=test
 
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+export IS_CI=true
+
 bundle exec rake db:create
 bundle exec rake db:migrate
 bundle exec rake assets:precompile

@@ -1,26 +1,25 @@
-require 'test_helper'
+require "test_helper"
 
 describe WebhookController do
-  it "should create new PagesRepository" do
-    assert_equal PagesRepository.all.count, 0
-
-    @create_hook = json_fixture("create_hook")
-
-    WebhookController.any_instance.stubs(:create_hook).returns(@create_hook.symbolize_keys)
-
-    post :create, name: "gjtorikian/branta", :format => 'json'
-
-    assert_equal PagesRepository.all.count, 1
+  before :each do
+    stub_meta
   end
 
-  it "should remove PagesRepository" do
-    pages_repository = Factory.create :pages_repository
-    assert_equal PagesRepository.all.count, 1
+  it "does nothing for unhandled events" do
+    post "create", fixture("deployment-success"), default_headers("deployment_status")
 
-    WebhookController.any_instance.stubs(:remove_hook).returns(true)
+    assert_response response.status, 404
+  end
 
-    delete :delete, name: pages_repository.name_with_owner, :format => 'json'
+  it "does nothing for non-successful pagesbuilds" do
+    post "create", fixture("pagebuild-errored"), default_headers("pagebuild")
 
-    assert_equal PagesRepository.all.count, 0
+    assert_response response.status, 406
+  end
+
+  it "handles events from successful pagesbuilds" do
+    post "create", fixture("pagebuild-success"), default_headers("pagebuild")
+
+    assert_response response.status, 201
   end
 end
