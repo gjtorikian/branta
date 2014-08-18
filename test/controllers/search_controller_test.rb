@@ -19,8 +19,8 @@ describe SearchController do
   def make_request(q, p = nil, s = nil, o = nil)
     if ENV['IS_CI']
       sort = s || "created_at"
-      order = 0 || "asc"
-      get 'index', {:q => q, :page => p, :sort => sort, :order => o}
+      order = o || "asc"
+      get 'index', {:q => q, :page => p, :sort => sort, :order => order}
     else
       get 'index', {:q => q, :page => p, :sort => s, :order => o}
     end
