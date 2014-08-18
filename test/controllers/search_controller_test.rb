@@ -92,16 +92,7 @@ describe SearchController do
 
   describe 'pagination' do
     setup do
-      80.times do |i|
-        hash = {
-                 :title => "item #{i + 5} of eighty-five entries",
-                 :body => "Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits. Dramatically visualize customer directed convergence without revolutionary ROI.",
-                 :path => "/path/#{i + 5}/article"
-               }
-        Page.create hash
-      end
-
-      Page.gateway.refresh_index!
+      ENV['BRANTA_PER_PAGE_COUNT'] = '1'
     end
 
     it 'limits the results' do
@@ -109,8 +100,8 @@ describe SearchController do
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
-      body["total"].must_equal 85
-      body["results"].length.must_equal 25
+      body["total"].must_equal 5
+      body["results"].length.must_equal 1
     end
 
     it 'can get a page of results' do
@@ -118,10 +109,10 @@ describe SearchController do
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
-      body["total"].must_equal 85
+      body["total"].must_equal 5
 
       result = body["results"].first
-      result["title"].must_equal "item 75 of eighty-five entries"
+      result["title"].must_equal "item 3 of five entries"
     end
   end
 end

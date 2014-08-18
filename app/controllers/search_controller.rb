@@ -2,10 +2,10 @@ class SearchController < ApplicationController
   respond_to :html, :js, :xml, :json
   layout false
 
-  PER_PAGE = 25
-
   def index
+    per_page = ENV['BRANTA_PER_PAGE_COUNT'].to_i < 1 ? 25 : ENV['BRANTA_PER_PAGE_COUNT'].to_i
     page  = [ params[:page].to_i, 1 ].max
+
     query = { query: {
               multi_match: {
                 query: params[:q],
@@ -21,8 +21,8 @@ class SearchController < ApplicationController
                 body:  { fragment_size: 160 }
               }
             },
-            size: PER_PAGE,
-            from: PER_PAGE * ( page - 1 )
+            size: per_page,
+            from: per_page * ( page - 1 )
           }
 
     pages = Page.search(query)
