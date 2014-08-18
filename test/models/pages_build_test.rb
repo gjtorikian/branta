@@ -9,7 +9,7 @@ describe PagesBuild do
       :guid            => SecureRandom.uuid,
       :name            => "hubot",
       :name_with_owner => "github/hubot",
-      :ref             => "master",
+      :pusher          => "gjtorikian",
       :sha             => "f24b8008",
       :status          => "success"
     }
