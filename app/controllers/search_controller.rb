@@ -42,7 +42,8 @@ class SearchController < ApplicationController
                               :body => !hit.highlight.body.nil? ? hit.highlight.body.first : truncated_body,
                               :title => !hit.highlight.title.nil? ? hit.highlight.title.first : page.attributes[:title],
                               :path => page.attributes[:path],
-                              :last_updated => page.attributes[:updated_at]
+                              :last_updated => page.attributes[:last_updated],
+                              :last_indexed => page.attributes[:updated_at]
                             }
       end
 

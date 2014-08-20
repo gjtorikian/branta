@@ -8,6 +8,7 @@ class Page
   attribute :title, String, mapping: { analyzer: 'texty' }
   attribute :body,  String, mapping: { analyzer: 'texty' }
   attribute :path,  String
+  attribute :last_updated,  DateTime
 
   validates :title, presence: true
   validates :body,  presence: true

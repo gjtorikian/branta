@@ -1,3 +1,4 @@
+require 'uri'
 require 'sitemap-parser'
 require 'pismo'
 
@@ -98,7 +99,27 @@ module Branta
       end
 
       def self.index_page(url, contents)
+        doc = Nokogiri::HTML(contents)
+        return unless doc.css("meta[http-equiv='refresh']").empty?
 
+        document = {}
+        pismo_doc = Pismo::Document.new(contents.scrub(''), :reader => :cluster)
+        pismo_doc.doc.encoding = "UTF-8"
+
+        # pismo's detection of the body is horrible
+        body = []
+
+        CONTENT_MATCHES.each do |content_selector|
+          body += doc.css(content_selector)
+          break if body.any?
+        end
+
+        document[:body] = body.map!(&:inner_text) # convert from Nokogiri Element objects to strings
+        document[:title] = pismo_doc.titles.first.nil? ? [] : pismo_doc.titles
+        document[:last_updated] = pismo_doc.datetime
+        document[:path] = URI(url).path
+
+        Page.create document
       end
 
       def self.perform(guid, payload, repository)
@@ -122,40 +143,6 @@ module Branta
         end
 
         hydra.run
-
-        # hash = { :id => "repository0",
-        #          :title => "page 0",
-        #          :body => "Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits. Dramatically visualize customer directed convergence without revolutionary ROI.",
-        #          :path => "/path/0/article"
-        #         }
-        #
-        # Page.create hash
-
-        # Dir.glob("**/*.html").map(&File.method(:realpath)).each do |html_file|
-        #   relative_path = html_file.match(/#{repo}\/(.+)/)[1]
-        #   html_file_contents = File.read(html_file)
-        #
-        #   # TODO: make these configurable?
-        #   doc = Nokogiri::HTML(html_file_contents)
-        #   next unless doc.css("meta[http-equiv='refresh']").empty?
-        #
-        #   title = doc.xpath("//title").text().strip
-        #   last_updated = doc.xpath("//span[contains(concat(' ',normalize-space(@class),' '),'last-modified-at-date')]").text().strip
-        #
-        #   body = []
-        #
-        #   CONTENT_MATCHES.each do |content_selector|
-        #     body += doc.css(content_selector)
-        #     break if body.any?
-        #   end
-        #
-        #   # convert from Nokogiri Element objects to strings
-        #   body.map!(&:inner_text)
-        #
-        #   page = Page.new id: "#{repo}::#{relative_path}", title: title, body: body, path: relative_path, last_updated: last_updated
-        #
-        #   GitHubPagesSearch::repository.save(page)
-        # end
 
         Page.gateway.refresh_index!
         record
