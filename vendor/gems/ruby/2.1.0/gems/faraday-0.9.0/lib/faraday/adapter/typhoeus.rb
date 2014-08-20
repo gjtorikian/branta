@@ -36,11 +36,11 @@ module Faraday
         # We want this because Webrick 1.3.1 can't seem to handle it w/ PUT.
         method = method.to_s.upcase if method == :put
 
-        # req = ::Typhoeus::Request.new env[:url].to_s,
-        #   :method  => method,
-        #   :body    => env[:body],
-        #   :headers => env[:request_headers],
-        #   :disable_ssl_peer_verification => (env[:ssl] && env[:ssl].disable?)
+        req = ::Typhoeus::Request.new env[:url].to_s,
+          :method  => method,
+          :body    => env[:body],
+          :headers => env[:request_headers],
+          :disable_ssl_peer_verification => (env[:ssl] && env[:ssl].disable?)
 
         configure_ssl     req, env
         configure_proxy   req, env
