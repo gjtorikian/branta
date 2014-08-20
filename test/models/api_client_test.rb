@@ -1,20 +1,21 @@
 require 'test_helper'
 
-describe ApiClient do
-  class ExampleClass
-    extend ApiClient
+describe Branta::ApiClient do
+  setup do
+    ENV['GITHUB_BRANTA_CLIENT_ID']     = 'id'
+    ENV['GITHUB_BRANTA_CLIENT_SECRET'] = 'secret'
   end
 
   describe "#oauth_client_api" do
     it "#oauth_client_api uses #github_client_id and #github_client_secret" do
-      ENV['GITHUB_CLIENT_ID']     = 'id'
-      ENV['GITHUB_CLIENT_SECRET'] = 'secret'
 
-    stub_request(:get, "https://api.github.com/meta?client_id=id&client_secret=secret").
-      with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>"Octokit Ruby Gem #{octokit_version}"}).
-      to_return(:status => 200, :body => "ok", :headers => {})
-
-      ExampleClass.oauth_client_api.meta.must_equal "ok"
+      Branta::ApiClient.github_client_id.must_equal "id"
+      Branta::ApiClient.github_client_secret.must_equal "secret"
     end
+  end
+
+  teardown do
+    ENV.delete('GITHUB_BRANTA_CLIENT_ID')
+    ENV.delete('GITHUB_BRANTA_CLIENT_SECRET')
   end
 end
