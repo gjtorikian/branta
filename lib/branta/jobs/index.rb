@@ -114,7 +114,7 @@ module Branta
           break if body.any?
         end
 
-        document[:body] = body.map!(&:inner_text) # convert from Nokogiri Element objects to strings
+        document[:body] = body.map!(&:inner_text).first # convert from Nokogiri Element objects to strings
         document[:title] = pismo_doc.titles.first.nil? ? [] : pismo_doc.titles
         document[:last_updated] = pismo_doc.datetime
         document[:path] = URI(url).path

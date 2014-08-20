@@ -99,7 +99,7 @@ describe Branta::Jobs::Index do
 
       doc[:title].first.must_equal "Signs Of Life"
       doc[:path].must_equal "/signs_of_life"
-      doc[:last_updated].must_equal DateTime.parse("Wed, 25 Jul 2012 12:00:00 -0700")
+      doc[:last_updated].strftime('%a, %d %b %Y %H:%M:%S').must_equal DateTime.parse("Wed, 25 Jul 2012 12:00:00")
       doc[:body].must_match /It started as I was picking up toys/
     end
   end
