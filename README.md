@@ -3,6 +3,8 @@ Branta
 
 Branta is a Rails app that listens for [`PageBuildEvent`][PageBuildEvent]s sent by GitHub. On a successful GitHub Pages build, the app will index your site for search. You can then make `GET` requests (with AJAX) on your Pages site and implement a full site search.
 
+[![Build Status](https://travis-ci.org/gjtorikian/branta.svg?branch=master)](https://travis-ci.org/gjtorikian/branta)
+
 ### Dependencies
 
 This app depends on the following systems:
