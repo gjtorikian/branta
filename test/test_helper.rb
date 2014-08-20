@@ -16,13 +16,15 @@ require 'webmock/minitest'
 
 require "warden/github/rails/test_helpers"
 
+require File.join("#{File.expand_path(File.dirname(__FILE__))}", "jobs", "index_test.rb")
+
 # Support files
-Dir["#{File.expand_path(File.dirname(__FILE__))}/support/*.rb"].each do |file|
+Dir[File.join("#{File.expand_path(File.dirname(__FILE__))}", "support", "*.rb")].each do |file|
   require file
 end
 
 # Factories
-Dir["#{File.expand_path(File.dirname(__FILE__))}/factories/*.rb"].each do |file|
+Dir[File.join("#{File.expand_path(File.dirname(__FILE__))}", "factories", "*.rb")].each do |file|
   require file
 end
 
@@ -32,6 +34,7 @@ class MiniTest::Spec
   include ActiveSupport::Testing::SetupAndTeardown
   include MetaHelper
   include WardenHelpers
+  include BackgroundJobs
 
   # allow connections to elasticsearch
   WebMock.disable_net_connect!(:allow => /branta_application/)

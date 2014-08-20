@@ -12,8 +12,11 @@ gem "resque", '~> 1.25'
 gem "resque-lock-timeout", '~> 0.4'
 gem 'elasticsearch-model', '~> 0.1'
 gem 'elasticsearch-persistence', '~> 0.1'
-gem 'nokogiri', '~> 1.6'
+gem 'nokogiri', '~> 1.5'
 gem 'pismo', '~> 0.7.4'
+gem 'sitemap-parser', '~> 0.2'
+gem 'patron', '~> 0.4.18'
+gem 'anemone', '~> 0.7'
 
 # assets stuff
 gem 'sass-rails', '~> 4.0.3'

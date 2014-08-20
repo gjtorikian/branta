@@ -1,6 +1,12 @@
+require 'uri'
+require 'sitemap-parser'
+require 'pismo'
+
 module Branta
   module Jobs
     class Index
+      include Branta::ApiClient
+
       CONTENT_MATCHES = [
         'div[role="main"]',
         'div.content',
@@ -27,10 +33,20 @@ module Branta
         redis_lock_key(guid, payload, repository)
       end
 
-      attr_accessor :guid, :payload, :repository
+      attr_accessor :guid, :payload, :repository, :hydra
+
+      def initialize(guid, payload, repository)
+        @guid = guid
+        @payload = payload
+        @repository = repository
+      end
 
       def self.name
         @payload["repository"]["name"]
+      end
+
+      def self.owner
+        @payload["repository"]["owner"]["login"]
       end
 
       def self.name_with_owner
@@ -55,44 +71,78 @@ module Branta
                           :repository_id   => @repository["id"])
       end
 
+      def self.get_sitemap
+        "#{domain_name}/sitemap.xml"
+      end
+
+      def self.domain_name
+        "http://" << begin
+          Branta::ApiClient.oauth_client_api.contents(name_with_owner, :path => 'CNAME')
+        rescue Octokit::NotFound # 404, no CNAME
+          "#{owner}.github.io/#{name}"
+        end
+      end
+
+      def self.queue_request(url)
+        request = Typhoeus::Request.new(url, followlocation: true)
+        request.on_complete { |response| response_handler(response) }
+        request
+      end
+
+      def self.response_handler(response)
+        url = response.request.base_url
+        if response.code.between?(200, 299)
+          index_page(url, response.body)
+        else
+          logger.error "#{response.code} for #{url}"
+        end
+      end
+
+      def self.index_page(url, contents)
+        doc = Nokogiri::HTML(contents)
+        return unless doc.css("meta[http-equiv='refresh']").empty?
+
+        document = {}
+        pismo_doc = Pismo::Document.new(contents.scrub(''), :reader => :cluster)
+        pismo_doc.doc.encoding = "UTF-8"
+
+        # pismo's detection of the body is horrible
+        body = []
+
+        CONTENT_MATCHES.each do |content_selector|
+          body += doc.css(content_selector)
+          break if body.any?
+        end
+
+        document[:body] = body.map!(&:inner_text).first # convert from Nokogiri Element objects to strings
+        document[:title] = pismo_doc.titles.first.nil? ? [] : pismo_doc.titles
+        document[:last_updated] = pismo_doc.datetime
+        document[:path] = URI(url).path
+
+        Page.create document
+      end
+
       def self.perform(guid, payload, repository)
         @guid    = guid
         @payload = payload
         @repository = repository
+        hydra   = Typhoeus::Hydra.new
+        sitemap = SitemapParser.new get_sitemap
 
-        hash = { :id => "repository0",
-                 :title => "page 0",
-                 :body => "Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits. Dramatically visualize customer directed convergence without revolutionary ROI.",
-                 :path => "/path/0/article"
-                }
+        # TODO: deal with robotstxt
+        if sitemap.to_a.empty?
+          Anemone.crawl(domain_name, :discard_page_bodies => true) do |anemone|
+            anemone.on_every_page do |page|
+              hydra.queue queue_request(page.url)
+            end
+          end
+        else
+          sitemap.to_a.each do |url|
+            hydra.queue queue_request(url)
+          end
+        end
 
-        Page.create hash
-
-        # Dir.glob("**/*.html").map(&File.method(:realpath)).each do |html_file|
-        #   relative_path = html_file.match(/#{repo}\/(.+)/)[1]
-        #   html_file_contents = File.read(html_file)
-        #
-        #   # TODO: make these configurable?
-        #   doc = Nokogiri::HTML(html_file_contents)
-        #   next unless doc.css("meta[http-equiv='refresh']").empty?
-        #
-        #   title = doc.xpath("//title").text().strip
-        #   last_updated = doc.xpath("//span[contains(concat(' ',normalize-space(@class),' '),'last-modified-at-date')]").text().strip
-        #
-        #   body = []
-        #
-        #   CONTENT_MATCHES.each do |content_selector|
-        #     body += doc.css(content_selector)
-        #     break if body.any?
-        #   end
-        #
-        #   # convert from Nokogiri Element objects to strings
-        #   body.map!(&:inner_text)
-        #
-        #   page = Page.new id: "#{repo}::#{relative_path}", title: title, body: body, path: relative_path, last_updated: last_updated
-        #
-        #   GitHubPagesSearch::repository.save(page)
-        # end
+        hydra.run
 
         Page.gateway.refresh_index!
         record
