@@ -158,5 +158,17 @@ describe SearchController do
       result = body["results"].first
       result["title"].must_match "item 2 of five <span class=\"search-term\">entries</span>"
     end
+
+    it 'properly scopes to more than one repo' do
+      make_request("entry", {:repo => "gjtorikian/repo2,gjtorikian/repo4"})
+
+      assert_response response.status, 200
+      body = JSON.parse(response.body)
+      body["total"].must_equal 2
+
+      result = body["results"].first
+      result["title"].must_match "item 2 of five <span class=\"search-term\">entries</span>"
+      body["results"][1]["title"].must_match "item 4 of five <span class=\"search-term\">entries</span>"
+    end
   end
 end

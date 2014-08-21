@@ -20,7 +20,7 @@ class SearchController < ApplicationController
             },
             filter: {
               terms: {
-                repo: [repo]
+                repo: repo.split(",")
               }
             }
           }
