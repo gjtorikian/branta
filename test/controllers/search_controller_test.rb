@@ -19,12 +19,11 @@ describe SearchController do
   # explicitly ask for the sort and order
   def make_request(q, opts = {})
     if ENV['IS_CI']
-      sort = opts[:sort] || "created_at"
-      order = opts[:order] || "asc"
-      get 'index', {:q => q, :page => opts[:page], :sort => sort, :order => order, :repo => opts[:repo]}
-    else
-      get 'index', {:q => q, :page => opts[:page], :sort => opts[:sort], :order => opts[:order], :repo => opts[:repo]}
+      opts[:sort] = opts[:sort] || "created_at"
+      opts[:order] = opts[:order] || "asc"
     end
+
+    get 'index', {:q => q, :page => opts[:page], :sort => opts[:sort], :order => opts[:order], :repo => opts[:repo]}
   end
 
   describe 'results in the body' do
@@ -213,7 +212,7 @@ describe SearchController do
       body = JSON.parse(response.body)
       body["total"].must_equal 2
 
-      result = body["results"].first
+      result = body["results"][1]
       result["title"].must_match "item x-y-1 of five <span class=\"search-term\">entries</span>"
     end
   end

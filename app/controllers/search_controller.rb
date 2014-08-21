@@ -3,7 +3,11 @@ class SearchController < ApplicationController
   layout false
 
   def index
-    per_page = ENV['BRANTA_PER_PAGE_COUNT'].to_i < 1 ? 25 : ENV['BRANTA_PER_PAGE_COUNT'].to_i
+    per_page = 25
+    if ENV['BRANTA_PER_PAGE_COUNT'].to_i > 0
+      per_page = [ ENV['BRANTA_PER_PAGE_COUNT'].to_i, 50 ].min
+    end
+
     page  = [ params[:page].to_i, 1 ].max
     sort  = params[:sort] || '_score'
     order  = params[:order] || 'desc'
