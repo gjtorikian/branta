@@ -8,30 +8,33 @@ class SearchController < ApplicationController
     sort  = params[:sort] || '_score'
     order  = params[:order] || 'desc'
     repo  = params[:repo] || nil
+    path  = params[:path] || nil
 
-    unless repo.nil?
-     query =  {
-          filtered: {
-            query: {
-              multi_match: {
-                query: params[:q],
-                fields: ['title^1', 'body']
-              }
-            },
-            filter: {
-              terms: {
-                repo: repo.split(",")
-              }
-            }
-          }
-        }
-    else
+    if repo.nil? && path.nil?
       query = {
             multi_match: {
               query: params[:q],
               fields: ['title^1', 'body']
             }
           }
+    else
+      query = {
+        filtered: {
+          query: {
+            multi_match: {
+              query: params[:q],
+              fields: ['title^1', 'body']
+            }
+          },
+          filter: {
+            terms: {
+            }
+          }
+        }
+      }
+
+      query[:filtered][:filter][:terms][:repo] = repo.split(",") if !repo.nil?
+      query[:filtered][:filter][:terms][:repo] = path.split(",") if !path.nil?
     end
 
     assembled_query = { query: query,

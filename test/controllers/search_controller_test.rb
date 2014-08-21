@@ -6,7 +6,7 @@ describe SearchController do
     5.times do |i|
       hash = {
                :title => "item #{i} of five entries",
-               :body => "Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits. Dramatically visualize customer directed convergence without revolutionary ROI.",
+               :body => fixture("rubbish", "txt").strip,
                :path => "/path/#{i}/article",
                :repo => "gjtorikian/repo#{i}"
              }
@@ -169,6 +169,52 @@ describe SearchController do
       result = body["results"].first
       result["title"].must_match "item 2 of five <span class=\"search-term\">entries</span>"
       body["results"][1]["title"].must_match "item 4 of five <span class=\"search-term\">entries</span>"
+    end
+  end
+
+  describe 'path scoping' do
+    setup do
+      Branta::IndexManager.create_index(true)
+
+      hash = {
+               :title => "item x-1 of five entries",
+               :body => fixture("rubbish", "txt"),
+               :path => "x/path/1/article",
+               :repo => "gjtorikian/repo1"
+             }
+      Page.create hash
+
+      hash = {
+               :title => "item x-y-1 of five entries",
+               :body => fixture("rubbish", "txt"),
+               :path => "x/y/path/1/article",
+               :repo => "gjtorikian/repo1"
+             }
+      Page.create hash
+
+      Page.gateway.refresh_index!
+    end
+
+    it 'properly scopes to a full path' do
+      make_request("entry", {:path => "x/y"})
+
+      assert_response response.status, 200
+      body = JSON.parse(response.body)
+      body["total"].must_equal 2
+
+      result = body["results"].first
+      result["title"].must_match "item x-1 of five <span class=\"search-term\">entries</span>"
+    end
+
+    it 'properly scopes to the start of a path' do
+      make_request("entry", {:path => "x"})
+
+      assert_response response.status, 200
+      body = JSON.parse(response.body)
+      body["total"].must_equal 2
+
+      result = body["results"].first
+      result["title"].must_match "item x-y-1 of five <span class=\"search-term\">entries</span>"
     end
   end
 end
