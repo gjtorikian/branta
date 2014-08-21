@@ -7,13 +7,34 @@ class SearchController < ApplicationController
     page  = [ params[:page].to_i, 1 ].max
     sort  = params[:sort] || '_score'
     order  = params[:order] || 'desc'
+    repo  = params[:repo] || nil
 
-    query = { query: {
+    unless repo.nil?
+     query =  {
+          filtered: {
+            query: {
               multi_match: {
                 query: params[:q],
                 fields: ['title^1', 'body']
               }
             },
+            filter: {
+              terms: {
+                repo: [repo]
+              }
+            }
+          }
+        }
+    else
+      query = {
+            multi_match: {
+              query: params[:q],
+              fields: ['title^1', 'body']
+            }
+          }
+    end
+
+    assembled_query = { query: query,
             highlight: {
               pre_tags: ['<span class="search-term">'],
               post_tags: ['</span>'],
@@ -28,7 +49,7 @@ class SearchController < ApplicationController
             from: per_page * ( page - 1 )
           }
 
-    pages = Page.search(query)
+    pages = Page.search(assembled_query)
 
     result = {}
 

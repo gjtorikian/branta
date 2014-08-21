@@ -7,7 +7,8 @@ describe SearchController do
       hash = {
                :title => "item #{i} of five entries",
                :body => "Collaboratively administrate empowered markets via plug-and-play networks. Dynamically procrastinate B2C users after installed base benefits. Dramatically visualize customer directed convergence without revolutionary ROI.",
-               :path => "/path/#{i}/article"
+               :path => "/path/#{i}/article",
+               :repo => "gjtorikian/repo#{i}"
              }
       Page.create hash
     end
@@ -16,13 +17,13 @@ describe SearchController do
 
   # there seems to be some kind of timing issue on Travis, and the only fix is to
   # explicitly ask for the sort and order
-  def make_request(q, p = nil, s = nil, o = nil)
+  def make_request(q, opts = {})
     if ENV['IS_CI']
-      sort = s || "created_at"
-      order = o || "asc"
-      get 'index', {:q => q, :page => p, :sort => sort, :order => order}
+      sort = opts[:sort] || "created_at"
+      order = opts[:order] || "asc"
+      get 'index', {:q => q, :page => opts[:page], :sort => sort, :order => order, :repo => opts[:repo]}
     else
-      get 'index', {:q => q, :page => p, :sort => s, :order => o}
+      get 'index', {:q => q, :page => opts[:page], :sort => opts[:sort], :order => opts[:order], :repo => opts[:repo]}
     end
   end
 
@@ -121,7 +122,7 @@ describe SearchController do
     end
 
     it 'can get a page of results' do
-      make_request("administrate", 4)
+      make_request("administrate", {:page => 4})
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -134,7 +135,7 @@ describe SearchController do
 
   describe 'sorting' do
     it 'properly sorts the results' do
-      make_request("administrate", nil, "updated_at", "desc")
+      make_request("administrate", {:order => "desc", :sort => "updated_at"})
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -143,6 +144,19 @@ describe SearchController do
 
       result = body["results"].first
       result["title"].must_equal "item 4 of five entries"
+    end
+  end
+
+  describe 'repo scoping' do
+    it 'properly scopes to a repo' do
+      make_request("entry", {:repo => "gjtorikian/repo2"})
+
+      assert_response response.status, 200
+      body = JSON.parse(response.body)
+      body["total"].must_equal 1
+
+      result = body["results"].first
+      result["title"].must_match "item 2 of five <span class=\"search-term\">entries</span>"
     end
   end
 end
