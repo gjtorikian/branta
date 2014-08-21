@@ -17,6 +17,11 @@ class WebhookController < ApplicationController
         redirect_to :status => 406, :json => "{}" and return;
       end
 
+      # for private Pages repositories
+      if data["repository"]["private"] && params[:pages_url]
+        data["pages_url"] = params[:pages_url]
+      end
+
       Resque.enqueue(Receiver, event, delivery, data)
       render :status => 201, :json => "{}"
     else
