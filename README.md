@@ -33,6 +33,7 @@ If you're running Branta yourself, you should set the following environment vari
 
 ### TODO:
 
+- Scope results by repository
 - Some kind of UI for the landing page
 
 [PageBuildEvent]: https://developer.github.com/v3/activity/events/types/#pagebuildevent
