@@ -88,6 +88,7 @@ describe Branta::Jobs::Index do
     end
 
     it 'properly indexes new pages' do
+      Branta::Jobs::Index.stubs(:name_with_owner).returns("baxterthehacker/public-repo")
       Branta::Jobs::Index.index_page("/signs_of_life", fixture("signs_of_life", "html"))
       Page.gateway.refresh_index!
 
@@ -95,12 +96,15 @@ describe Branta::Jobs::Index do
     end
 
     it 'properly plucks information' do
+      Branta::Jobs::Index.stubs(:name_with_owner).returns("baxterthehacker/public-repo")
       doc = Branta::Jobs::Index.index_page("/signs_of_life", fixture("signs_of_life", "html"))
 
       doc[:title].first.must_equal "Signs Of Life"
       doc[:path].must_equal "/signs_of_life"
       doc[:last_updated].strftime('%a, %d %b %Y %H:%M:%S').must_equal DateTime.parse("Wed, 25 Jul 2012 12:00:00")
       doc[:body].must_match /It started as I was picking up toys/
+      doc[:repo].must_equal "baxterthehacker/public-repo"
+
     end
   end
 end

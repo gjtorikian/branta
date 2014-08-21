@@ -118,6 +118,7 @@ module Branta
         document[:title] = pismo_doc.titles.first.nil? ? [] : pismo_doc.titles
         document[:last_updated] = pismo_doc.datetime
         document[:path] = URI(url).path
+        document[:repo] = name_with_owner
 
         Page.create document
       end

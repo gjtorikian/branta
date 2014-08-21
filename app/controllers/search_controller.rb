@@ -3,17 +3,45 @@ class SearchController < ApplicationController
   layout false
 
   def index
-    per_page = ENV['BRANTA_PER_PAGE_COUNT'].to_i < 1 ? 25 : ENV['BRANTA_PER_PAGE_COUNT'].to_i
+    per_page = 25
+    if ENV['BRANTA_PER_PAGE_COUNT'].to_i > 0
+      per_page = [ ENV['BRANTA_PER_PAGE_COUNT'].to_i, 50 ].min
+    end
+
     page  = [ params[:page].to_i, 1 ].max
     sort  = params[:sort] || '_score'
     order  = params[:order] || 'desc'
+    repo  = params[:repo] || nil
+    path  = params[:path] || nil
 
-    query = { query: {
-              multi_match: {
-                query: params[:q],
-                fields: ['title^1', 'body']
-              }
-            },
+    if repo.nil? && path.nil?
+      query = {
+            multi_match: {
+              query: params[:q],
+              fields: ['title^1', 'body']
+            }
+          }
+    else
+      query = {
+        filtered: {
+          query: {
+            multi_match: {
+              query: params[:q],
+              fields: ['title^1', 'body']
+            }
+          },
+          filter: {
+            terms: {
+            }
+          }
+        }
+      }
+
+      query[:filtered][:filter][:terms][:repo] = repo.split(",") if !repo.nil?
+      query[:filtered][:filter][:terms][:repo] = path.split(",") if !path.nil?
+    end
+
+    assembled_query = { query: query,
             highlight: {
               pre_tags: ['<span class="search-term">'],
               post_tags: ['</span>'],
@@ -28,7 +56,7 @@ class SearchController < ApplicationController
             from: per_page * ( page - 1 )
           }
 
-    pages = Page.search(query)
+    pages = Page.search(assembled_query)
 
     result = {}
 
