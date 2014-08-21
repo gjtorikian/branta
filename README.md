@@ -11,7 +11,7 @@ Branta prefers that you have a sitemap.xml file defined at your root, as it make
 
 ## What does it index?
 
-Branta indexes the following parts of each page:
+The following parts of each page are indexed:
 
 * The title
 * The body
@@ -29,12 +29,14 @@ Basically, you're going to want to make your queries against `/search`:
 http://your-branta.com/search?q=query
 ```
 
+Searches are made against the title and body of each page.
+
 Here are the parameters available to you:
 
 |Query parameter | Description | Sample
 |----------------|-------------|----------
 `page` | The page number of the results you want. | `http://your-branta.com/search?q=query&page=2`
-|`sort` | Which parameter you want to sort on. The default is relevancy score. | `http://your-branta.com/search?q=query&sort=updated_at`
+|`sort` | Which parameter you want to sort on. The default is relevancy score. You can sort on any of the indexed information. | `http://your-branta.com/search?q=query&sort=updated_at`
 |`order` | The ordering of your sort. The default is `desc`. | `http://your-branta.com/search?q=query&sort=updated_at&order=asc`
 |`repo` | The repository you want to search in. Use a comma-separated list to pass in more than one. | `http://your-branta.com/search?q=query&repo=gjtorikian/test1`<br />`http://your-branta.com/search?q=query&repo=gjtorikian/test1,gjtorikian/test2`
 |`path` | The path you want to search in. Use a comma-separated list to pass in more than one. | `http://your-branta.com/search?q=query&path=articles`<br />`http://your-branta.com/search?q=query&path=articles/new,articles/fresh`
