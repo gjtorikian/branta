@@ -43,7 +43,7 @@ Here are the parameters available to you:
 
 ## Highlighting
 
-Matched terms in the body are returned in a `<span class="search-term">` tag.
+Matched terms in the body are wrapped in a `<span class="search-term">` tag.
 
 ## Dependencies
 
@@ -73,5 +73,6 @@ If you're running Branta yourself, you should set the following environment vari
 ### TODO:
 
 - Some kind of UI for the landing page
+- Some kind of "oh shit" reindex everything task
 
 [PageBuildEvent]: https://developer.github.com/v3/activity/events/types/#pagebuildevent
