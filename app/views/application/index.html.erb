@@ -1,11 +1,11 @@
-<% view = PagesBuilds::IndexView.new(@pages_builds) %>
+<% view = PagesBuilds::IndexView.new %>
 
 <% if !ENV['GITHUB_BRANTA_TEAM_ID'].nil? %>
 
 <% else %>
 
   <% if view.empty_for_user?(github_user) %>
-    <h1>No Pages sites have been indexed...yet.</h1>
+    <h1>No GitHub Pages sites have been indexed...yet.</h1>
   <% else %>
     <table class="table table-condensed table-striped">
     <thead>
