@@ -3,6 +3,8 @@ class PagesBuild < ActiveRecord::Base
 
   belongs_to :repository
 
+  attr_reader :name_with_owner, :updated_at, :pusher
+
   def self.latest_for_name_with_owner(name_with_owner)
     sets = self.select(:name, :status).
       where(:name_with_owner => name_with_owner).

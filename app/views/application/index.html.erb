@@ -1,13 +1,28 @@
 <% view = PagesBuilds::IndexView.new(@pages_builds) %>
 
-<% if view.pages_builds.empty? %>
-  <h1>No Pages sites have been indexed...yet.</h1>
+<% if !ENV['GITHUB_BRANTA_TEAM_ID'].nil? %>
+
 <% else %>
-  <table>
-  <% view.pages_builds.each do |pages_build| %>
-    <tr>
-      <td><%= pages_build %> </td>
-    </tr>
+
+  <% if view.empty_for_user?(github_user) %>
+    <h1>No Pages sites have been indexed...yet.</h1>
+  <% else %>
+    <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Repository name</th>
+        <th>Indexed at</th>
+        <th>Pushed by</th>
+      </tr>
+    </thead>
+    <% view.user_pages_builds.first.reverse.each do |pages_build| %>
+      <tr>
+        <td><%= pages_build.read_attribute "name_with_owner" %> </td>
+        <td><%= pages_build.read_attribute "updated_at" %> </td>
+        <td><%= pages_build.read_attribute "pusher" %> </td>
+      </tr>
+    <% end %>
+    </table>
   <% end %>
-  </table>
+
 <% end %>
