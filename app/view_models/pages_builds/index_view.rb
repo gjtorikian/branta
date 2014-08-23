@@ -11,7 +11,6 @@ module PagesBuilds
       @user_pages_builds = repo_ids.map do |repo_id|
         PagesBuild.where(:repository_id => repo_id).limit(50)
       end
-      ap @user_pages_builds
       @user_pages_builds.empty?
     end
   end
