@@ -16,23 +16,18 @@
       <ul class="nav navbar-nav">
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <% if defined?(Devise) %>
-          <% if user_signed_in? %>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <%= image_tag "https://github.com/#{current_user.username}.png", :size => "20x20", :alt => "Avatar for #{current_user.username}" %>
-                <%= current_user.username %> <b class="caret"></b>
-              </a>
-              <ul class="dropdown-menu">
-                <li class="divider"></li>
-                <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete %></li>
-              </ul>
-            </li>
-          <% else %>
-            <li>
-              <%= link_to(("Sign in with " + octicon("mark-github")).html_safe, user_omniauth_authorize_path(:github) ) %>
-            </li>
-          <% end %>
+        <% if github_authenticated? %>
+          <li>
+            <a href="#">
+            <%= image_tag "https://github.com/#{github_user.login}.png", :size => "20x20", :alt => "Avatar for #{github_user.login}" %>
+            <%= github_user.login %>
+            </a>
+          </li>
+          <li><%= link_to((octicon("sign-out")).html_safe, logout_path) %></li>
+        <% else %>
+          <li>
+            <%= link_to(("Sign in with " + octicon("mark-github")).html_safe, login_path) %>
+          </li>
         <% end %>
       </ul>
     </div><!-- /.navbar-collapse -->
