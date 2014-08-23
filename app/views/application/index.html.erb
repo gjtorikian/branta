@@ -5,9 +5,28 @@
 
 <% else %>
   <% if !ENV['GITHUB_BRANTA_ORG_NAME'].nil? %>
-
+    <% if view.empty_for_org? %>
+      <h1>No GitHub Pages sites have been indexed...yet.</h1>
+    <% else %>
+      <h2><%= ENV['GITHUB_BRANTA_ORG_NAME'] %>'s pages builds</h2>
+      <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>Repository name</th>
+          <th>Indexed at</th>
+          <th>Pushed by</th>
+        </tr>
+      </thead>
+      <% view.org_pages_builds.reverse.each do |pages_build| %>
+        <tr>
+          <td><%= pages_build.read_attribute "name_with_owner" %> </td>
+          <td><%= pages_build.read_attribute "updated_at" %> </td>
+          <td><%= pages_build.read_attribute "pusher" %> </td>
+        </tr>
+      <% end %>
+      </table>
+    <% end %>
   <% else %>
-
     <% if view.empty_for_user?(github_user) %>
       <h1>No GitHub Pages sites have been indexed...yet.</h1>
     <% else %>

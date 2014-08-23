@@ -22,9 +22,9 @@ Branta::Application.routes.draw do
 
     mount Resque::Server.new, :at => "/resque", constraints: ResqueWhitelist.new
   else
-    github_authenticate(:org => ENV['GITHUB_BRANTA_ORG_NAME']) do
-      root 'application#index'
+    root 'application#index'
 
+    github_authenticate(:org => ENV['GITHUB_BRANTA_ORG_NAME']) do
       get "/login"               => "sessions#create"
       get "/logout"              => "sessions#destroy"
 
