@@ -2,4 +2,6 @@
 
 bundle install --binstubs --local --path vendor/gems
 
+bower install
+
 script/setup
