@@ -40,6 +40,7 @@ end
 
 group :development do
   gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'foreman', '~> 0.71'
   gem 'dotenv-rails'
   gem 'rerun', "~> 0.10"
