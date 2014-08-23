@@ -24,13 +24,3 @@
 .yield {
   margin: 30px;
 }
-
-// Constrain forms for models (scaffolded models) so they aren't full page width.
-.form-model {
-  max-width: 750px;
-}
-
-//->Prelang (user_login:devise)
-.form-user {
-  max-width: 450px;
-}
