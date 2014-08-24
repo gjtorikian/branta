@@ -2,7 +2,6 @@ class WebhookController < ApplicationController
   include WebhookValidations
 
   before_filter :verify_incoming_webhook_address!
-  skip_before_filter :verify_authenticity_token, :only => [:create]
 
   def create
     event    = request.headers['HTTP_X_GITHUB_EVENT']
@@ -10,10 +9,13 @@ class WebhookController < ApplicationController
 
     if valid_events.include?(event)
       request.body.rewind
-      data = request.body.read
+      data =  JSON.parse request.body.read
 
-      data = JSON.parse(data)
       unless data["build"]["status"] == "built"
+        redirect_to :status => 406, :json => "{}" and return;
+      end
+
+      if ENV['GITHUB_BRANTA_ORG_NAME'] && data["repository"]["owner"]["login"] != ENV['GITHUB_BRANTA_ORG_NAME']
         redirect_to :status => 406, :json => "{}" and return;
       end
 

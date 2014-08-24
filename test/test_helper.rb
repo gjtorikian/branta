@@ -47,7 +47,7 @@ class MiniTest::Spec
     ActiveSupport::JSON.decode(fixture(name))
   end
 
-  def default_headers(event, remote_ip = "192.30.252.41")
+  def default_headers(event, remote_ip = "192.30.252.0/22")
     {
       'ACCEPT'                 => 'application/json' ,
       'CONTENT_TYPE'           => 'application/json',

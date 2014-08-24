@@ -1,25 +1,54 @@
 require "test_helper"
 
 describe WebhookController do
-  before :each do
+  setup do
     stub_meta
   end
 
   it "does nothing for unhandled events" do
-    post "create", fixture("deployment-success"), default_headers("deployment_status")
+    default_headers("deployment_status").each_pair { |key, value| @request.env[key] = value }
+    post "create", fixture("deployment-success")
 
-    assert_response response.status, 404
+    response.status.must_equal 404
   end
 
-  it "does nothing for non-successful pagesbuilds" do
-    post "create", fixture("pagebuild-errored"), default_headers("pagebuild")
+  it "does nothing for events from strange IPs" do
+    default_headers("page_build", "192.32.73.100").each_pair { |key, value| @request.env[key] = value }
+    post "create", fixture("pagebuild-success")
 
-    assert_response response.status, 406
+    response.status.must_equal 404
   end
 
-  it "handles events from successful pagesbuilds" do
-    post "create", fixture("pagebuild-success"), default_headers("pagebuild")
+  describe 'valid page_build scenarios' do
+    before do
+      default_headers("page_build").each_pair { |key, value| @request.env[key] = value }
+      ENV.delete('GITHUB_BRANTA_ORG_NAME')
+    end
 
-    assert_response response.status, 201
+    it "does nothing for non-successful pagesbuilds" do
+      post "create", fixture("pagebuild-errored")
+
+      response.status.must_equal 406
+    end
+
+    it "handles events from successful pagesbuilds" do
+      post "create", fixture("pagebuild-success")
+
+      response.status.must_equal 201
+    end
+
+    it "blocks non-org repos from pushing" do
+      ENV['GITHUB_BRANTA_ORG_NAME'] = 'github'
+      post "create", fixture("pagebuild-success")
+
+      response.status.must_equal 406
+    end
+
+    it "allows org repos to push" do
+      ENV['GITHUB_BRANTA_ORG_NAME'] = 'github'
+      post "create", fixture("org-pagebuild-success")
+
+      response.status.must_equal 201
+    end
   end
 end
