@@ -1,4 +1,4 @@
-class ResqueWhitelist
+class ResqueWhitelistConstraint
   def initialize
     @whitelisted_users = %w(gjtorikian)
   end
@@ -19,7 +19,7 @@ Branta::Application.routes.draw do
     get "/login"               => "sessions#create"
     get "/logout"              => "sessions#destroy"
 
-    mount Resque::Server.new, :at => "/resque", constraints: ResqueWhitelist.new
+    mount Resque::Server.new, :at => "/resque", constraints: ResqueWhitelistConstraint.new
   else
     github_authenticate(:org => ENV['GITHUB_BRANTA_ORG_NAME']) do
       get "/login"               => "sessions#create"
