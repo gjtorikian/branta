@@ -10,27 +10,20 @@ class ResqueWhitelist
 end
 
 Branta::Application.routes.draw do
-  if ENV['GITHUB_BRANTA_ORG_NAME'].nil?
-    root 'application#index'
+  root 'application#index'
 
+  post "/post_receive"         => "webhook#create"
+  get "/search"                => "search#index"
+
+  if ENV['GITHUB_BRANTA_ORG_NAME'].nil?
     get "/login"               => "sessions#create"
     get "/logout"              => "sessions#destroy"
 
-    post "/post_receive"         => "webhook#create"
-
-    get "/search"                => "search#index"
-
     mount Resque::Server.new, :at => "/resque", constraints: ResqueWhitelist.new
   else
-    root 'application#index'
-
     github_authenticate(:org => ENV['GITHUB_BRANTA_ORG_NAME']) do
       get "/login"               => "sessions#create"
       get "/logout"              => "sessions#destroy"
-
-      post "/post_receive"         => "webhook#create"
-
-      get "/search"                => "search#index"
 
       mount Resque::Server.new, :at => "/resque"
     end

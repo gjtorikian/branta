@@ -1,8 +1,7 @@
 <% view = PagesBuilds::IndexView.new %>
 
 <% if !github_user %>
-<h1>hey.</h1>
-
+  <h1>hey.</h1>
 <% else %>
   <% if !ENV['GITHUB_BRANTA_ORG_NAME'].nil? %>
     <% if view.empty_for_org? %>

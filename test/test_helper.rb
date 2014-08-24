@@ -4,9 +4,8 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 
 require 'rubygems'
-gem 'minitest'
-require "minitest/pride"
 require 'minitest/autorun'
+require "minitest/pride"
 require 'minitest/focus'
 require 'action_controller/test_case'
 
@@ -32,8 +31,8 @@ DatabaseCleaner.strategy = :truncation
 
 class MiniTest::Spec
   include ActiveSupport::Testing::SetupAndTeardown
+  include Warden::GitHub::Rails::TestHelpers
   include MetaHelper
-  include WardenHelpers
   include BackgroundJobs
 
   # allow connections to elasticsearch
@@ -89,6 +88,7 @@ MiniTest::Spec.register_spec_type( /Controller$/, ControllerSpec )
 
 class AcceptanceSpec < MiniTest::Spec
   include Rails.application.routes.url_helpers
+  include ActionController::TestCase::Behavior
   include Capybara::DSL
   include Warden::Test::Helpers
   Warden.test_mode!
@@ -115,4 +115,4 @@ class AcceptanceSpec < MiniTest::Spec
   end
 end
 
-MiniTest::Spec.register_spec_type( /Integration$/, AcceptanceSpec )
+MiniTest::Spec.register_spec_type( /Integration/, AcceptanceSpec )
