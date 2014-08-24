@@ -62,5 +62,5 @@ compiling Variadic.c
 linking shared-object ffi_c.bundle
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 ffi_c.bundle ./.gem.20140719-45006-1kuc8zd
+/usr/bin/install -c -m 0755 ffi_c.bundle ./.gem.20140821-65145-o92ojo
 installing default ffi_c libraries
