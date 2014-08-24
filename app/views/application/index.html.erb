@@ -1,11 +1,15 @@
 <% view = PagesBuilds::IndexView.new %>
 
 <% if !github_user %>
-  <h1>hey.</h1>
+  <% if ENV['GITHUB_BRANTA_ORG_NAME'].nil? %>
+    <h1>hey.</h1>
+  <% else %>
+    <h1>nope.</h1>
+  <% end %>
 <% else %>
   <% if !ENV['GITHUB_BRANTA_ORG_NAME'].nil? %>
     <% if view.empty_for_org? %>
-      <h1>No GitHub Pages sites have been indexed...yet.</h1>
+      <h1>No GitHub Pages sites have been indexed for y'all...yet.</h1>
     <% else %>
       <h2><%= ENV['GITHUB_BRANTA_ORG_NAME'] %>'s pages builds</h2>
       <table class="table table-condensed table-striped">
@@ -27,7 +31,7 @@
     <% end %>
   <% else %>
     <% if view.empty_for_user?(github_user) %>
-      <h1>No GitHub Pages sites have been indexed...yet.</h1>
+      <h1>No GitHub Pages sites have been indexed for you...yet.</h1>
     <% else %>
       <table class="table table-condensed table-striped">
       <thead>

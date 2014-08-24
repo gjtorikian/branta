@@ -16,6 +16,7 @@ require 'webmock/minitest'
 require "warden/github/rails/test_helpers"
 
 require File.join("#{File.expand_path(File.dirname(__FILE__))}", "jobs", "index_test.rb")
+require File.join("#{File.expand_path(File.dirname(__FILE__))}", "view_models", "pages_builds", "index_view.rb")
 
 # Support files
 Dir[File.join("#{File.expand_path(File.dirname(__FILE__))}", "support", "*.rb")].each do |file|
