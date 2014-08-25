@@ -9,6 +9,10 @@ describe Branta::Jobs::Index do
     JSON.parse fixture("pagebuild-success")
   end
 
+  let(:private_payload) do
+    JSON.parse fixture("private-pagebuild-success")
+  end
+
   let(:repository) do
     {
       :owner => "baxterthehacker",
@@ -36,16 +40,28 @@ describe Branta::Jobs::Index do
       Branta::Jobs::Index.domain_name.must_equal "http://yes.real.site"
     end
 
-    it 'deals with a missing CNAME' do
-      stub_request(:get, "https://api.github.com/repos/baxterthehacker/public-repo/contents/CNAME?client_id=%3Cunknown-client-id%3E&client_secret=%3Cunknown-client-secret%3E").
-        with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Octokit Ruby Gem 3.3.1'}).
-        to_return(:status => 404, :body => "", :headers => {})
+    describe 'deals with a missing CNAME' do
+      before do
+        stub_request(:get, "https://api.github.com/repos/baxterthehacker/public-repo/contents/CNAME?client_id=%3Cunknown-client-id%3E&client_secret=%3Cunknown-client-secret%3E").
+          with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Octokit Ruby Gem 3.3.1'}).
+          to_return(:status => 404, :body => "", :headers => {})
 
-      Branta::Jobs::Index.stubs(:name_with_owner).returns("baxterthehacker/public-repo")
-      Branta::Jobs::Index.stubs(:owner).returns("baxterthehacker")
-      Branta::Jobs::Index.stubs(:name).returns("public-repo")
+        Branta::Jobs::Index.stubs(:name_with_owner).returns("baxterthehacker/public-repo")
+      end
 
-      Branta::Jobs::Index.domain_name.must_equal "http://baxterthehacker.github.io/public-repo"
+      it "uses pages_url when it can" do
+        Branta::Jobs::Index.stubs(:pages_url).returns(private_payload["pages_url"])
+
+        Branta::Jobs::Index.domain_name.must_equal "http://some-website"
+      end
+
+      it "constructs the url when it can" do
+        Branta::Jobs::Index.stubs(:pages_url).returns(nil)
+        Branta::Jobs::Index.stubs(:owner).returns("baxterthehacker")
+        Branta::Jobs::Index.stubs(:name).returns("public-repo")
+
+        Branta::Jobs::Index.domain_name.must_equal "http://baxterthehacker.github.io/public-repo"
+      end
     end
   end
 

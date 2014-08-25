@@ -61,6 +61,10 @@ module Branta
         @payload['build']['commit'][0..7]
       end
 
+      def self.pages_url
+        @payload["pages_url"]
+      end
+
       def self.record
         PagesBuild.create(:status          => "built",
                           :guid            => @guid,
@@ -79,7 +83,11 @@ module Branta
         "http://" << begin
           Branta::ApiClient.oauth_client_api.contents(name_with_owner, :path => 'CNAME')
         rescue Octokit::NotFound # 404, no CNAME
-          "#{owner}.github.io/#{name}"
+          if pages_url.nil?
+            "#{owner}.github.io/#{name}"
+          else
+            pages_url
+          end
         end
       end
 
@@ -94,7 +102,7 @@ module Branta
         if response.code.between?(200, 299)
           index_page(url, response.body)
         else
-          logger.error "#{response.code} for #{url}"
+          Rails.logger.error "#{response.code} for #{url}"
         end
       end
 
