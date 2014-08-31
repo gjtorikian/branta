@@ -29,6 +29,10 @@ gem 'jquery-rails'
 gem 'bootstrap-sass', '~> 3.2'
 gem 'bootstrap-sass-extras'
 
+if ENV['IS_HEROKU']
+  gem 'rails_12factor'
+end
+
 group :test do
   gem 'minitest-rails'
   gem 'minitest-focus'
