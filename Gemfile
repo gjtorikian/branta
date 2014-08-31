@@ -8,6 +8,9 @@ gem 'turbolinks'
 gem 'unicorn'
 gem "octokit"
 gem "warden-github-rails", "1.1.0"
+gem 'high_voltage', '~> 2.2.1'
+
+# search stuff
 gem "resque", '~> 1.25'
 gem "resque-lock-timeout", '~> 0.4'
 gem 'elasticsearch-model', '~> 0.1'
