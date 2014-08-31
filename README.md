@@ -7,7 +7,7 @@ Branta is a Rails app that listens for [`PageBuildEvent`][PageBuildEvent]s sent 
 
 ## How does it index?
 
-When your page builds successfully, Branta walks over your site and indexes all the content. Branta prefers that you have a *sitemap.xml* file defined at your root, as it makes indexing the content of your site much easier and more reliable. Otherwise, it uses [Anemone](https://github.com/chriskite/anemone) to walk over all your pages.
+When your page builds successfully, Branta walks over your site and indexes all the content. Branta prefers that you have a *sitemap.xml* file defined at your root, as it makes indexing the content of your site much easier and more reliable (via [sitemap-parser](https://github.com/benbalter/sitemap-parser). Otherwise, it uses [Anemone](https://github.com/chriskite/anemone) to walk over all your pages.
 
 ## What does it index?
 
@@ -38,16 +38,18 @@ http://your-branta.com/search?q=query
 Here's an example query with AJAX using jQuery:
 
 ```javascript
-$.ajax(
+$.ajax({
   url: "https://branta.io/search?q=commit",
   type: "GET",
   crossDomain: true,
   dataType: "json"
-).done (data) ->
-  results = data?.results
-  if results?.length > 0
-    // iterate over the results
-
+}).done(function(data) {
+  var results;
+  results = data != null ? data.results : void 0;
+  if ((results != null ? results.length : void 0) > 0) {
+    // iterate over results
+  }
+});
 ```
 
 ### Payload
