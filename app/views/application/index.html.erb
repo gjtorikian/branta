@@ -1,12 +1,9 @@
 <% view = PagesBuilds::IndexView.new %>
 
 <% if !github_user %>
-  <% if ENV['GITHUB_BRANTA_ORG_NAME'].nil? %>
-    <h1>hey.</h1>
-  <% else %>
-    <h1>nope.</h1>
-  <% end %>
+  <%= render partial: "elements/non_org_landing" %>
 <% else %>
+  <div class="container">
   <% if !ENV['GITHUB_BRANTA_ORG_NAME'].nil? %>
     <% if view.empty_for_org? %>
       <h1>No GitHub Pages sites have been indexed for y'all...yet.</h1>
@@ -51,4 +48,5 @@
       </table>
     <% end %>
   <% end %>
+</div>
 <% end %>

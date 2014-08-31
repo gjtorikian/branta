@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default" role="navigation">
+<nav id="topnav" class="navbar navbar-default" role="navigation">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -14,19 +14,30 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
+        <li>
+          <a href="https://www.github.com/gjtorikian/branta"><%= octicon("mark-github", :title => "Source on GitHub", :'data-placement' => "bottom", :'data-toggle' => "tooltip").html_safe %></a>
+        </li>
+        <li>
+          <%= link_to 'About', page_path('about') %>
+        </li>
+        <% if github_authenticated? %>
+          <li>
+
+          </li>
+        <% end %>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <% if github_authenticated? %>
           <li>
-            <a href="#">
-            <%= image_tag "https://github.com/#{github_user.login}.png", :size => "20x20", :alt => "Avatar for #{github_user.login}" %>
-            <%= github_user.login %>
-            </a>
+            <p class="navbar-text">
+              <%= image_tag "https://github.com/#{github_user.login}.png", :size => "20x20", :alt => "Avatar for #{github_user.login}" %>
+              <%= github_user.login %>
+            </p>
           </li>
-          <li><%= link_to((octicon("sign-out")).html_safe, logout_path) %></li>
+          <li><%= link_to((octicon("sign-out", :title => "Sign out", :'data-placement' => "bottom", :'data-toggle' => "tooltip")).html_safe, logout_path) %></li>
         <% else %>
           <li>
-            <%= link_to(("Sign in with " + octicon("mark-github")).html_safe, login_path) %>
+            <%= link_to("Sign in with GitHub", login_path) %>
           </li>
         <% end %>
       </ul>
