@@ -1,30 +1,58 @@
 class WebhookController < ApplicationController
-  include WebhookValidations
-
-  before_filter :verify_incoming_webhook_address!
-  skip_before_filter :verify_authenticity_token, :only => [:create]
+  def index
+  end
 
   def create
-    event    = request.headers['HTTP_X_GITHUB_EVENT']
-    delivery = request.headers['HTTP_X_GITHUB_DELIVERY']
+    respond_to do |format|
+      repo_name = params[:name]
 
-    if valid_events.include?(event)
-      request.body.rewind
-      data = request.body.read
+      config = {
+        :url => "#{request.protocol}#{request.host_with_port}#{post_receive_path}",
+        :content_type => 'json'
+      }
+      options = {
+        :events => ['page_build'],
+        :active => true
+      }
 
-      data = JSON.parse(data)
-      unless data["build"]["status"] == "built"
-        redirect_to :status => 406, :json => "{}" and return;
+      begin
+        result = create_hook(repo_name, config, options)
+        owner, name = repo_name.split('/')
+        Repository.new(owner: owner, name: name, name_with_owner: repo_name, hook_id: result[:id].to_i).save!
+      rescue Octokit::UnprocessableEntity => e
+        # TODO: hook already exists
       end
 
-      Resque.enqueue(Receiver, event, delivery, data)
-      render :status => 201, :json => "{}"
-    else
-      render :status => 404, :json => "{}"
+      format.json  { head :no_content }
     end
   end
 
-  def valid_events
-    %w(page_build)
+  def delete
+    respond_to do |format|
+      repo_name = params[:name]
+
+      page_repository = Repository.find_by_name_with_owner(repo_name)
+
+      remove_hook(repo_name, page_repository.hook_id)
+
+      page_repository.destroy
+
+      format.json  { head :no_content }
+    end
   end
+
+
+  private
+
+    def create_hook(repo_name, config, options)
+      github_user.api.create_hook(repo_name, "web", config, options)
+    end
+
+    def remove_hook(repo_name, id)
+      github_user.api.remove_hook(repo_name, id)
+    end
+
+    def pages_repository_params
+      params.required(:pages_repository).permit(:name_with_owner, :hook_id)
+    end
 end

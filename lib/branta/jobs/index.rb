@@ -1,6 +1,7 @@
 require 'uri'
 require 'sitemap-parser'
 require 'pismo'
+require "base64"
 
 module Branta
   module Jobs
@@ -77,8 +78,9 @@ module Branta
 
       def self.domain_name
         "http://" << begin
-          Branta::ApiClient.oauth_client_api.contents(name_with_owner, :path => 'CNAME')
-        rescue Octokit::NotFound # 404, no CNAME
+          content = Branta::ApiClient.oauth_client_api.contents(name_with_owner, :path => 'CNAME')[:content]
+          Base64.decode64(content).strip
+        rescue TypeError, Octokit::NotFound # 404, no CNAME
           "#{owner}.github.io/#{name}"
         end
       end

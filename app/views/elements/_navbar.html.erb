@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default" role="navigation">
+<nav id="topnav" class="navbar navbar-default" role="navigation">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -12,27 +12,33 @@
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+    <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
+        <li>
+          <a href="https://www.github.com/gjtorikian/branta"><%= octicon("mark-github", :title => "Source on GitHub", :'data-placement' => "bottom", :'data-toggle' => "tooltip").html_safe %></a>
+        </li>
+        <li>
+          <%= link_to 'About', page_path('about') %>
+        </li>
+        <% if github_authenticated? %>
+          <li>
+            <%= link_to 'Manage webhooks', manage_webhook_path %>
+          </li>
+        <% end %>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <% if defined?(Devise) %>
-          <% if user_signed_in? %>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <%= image_tag "https://github.com/#{current_user.username}.png", :size => "20x20", :alt => "Avatar for #{current_user.username}" %>
-                <%= current_user.username %> <b class="caret"></b>
-              </a>
-              <ul class="dropdown-menu">
-                <li class="divider"></li>
-                <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete %></li>
-              </ul>
-            </li>
-          <% else %>
-            <li>
-              <%= link_to(("Sign in with " + octicon("mark-github")).html_safe, user_omniauth_authorize_path(:github) ) %>
-            </li>
-          <% end %>
+        <% if github_authenticated? %>
+          <li>
+            <p class="navbar-text">
+              <%= image_tag "https://github.com/#{github_user.login}.png", :size => "20x20", :alt => "Avatar for #{github_user.login}" %>
+              <%= github_user.login %>
+            </p>
+          </li>
+          <li><%= link_to((octicon("sign-out", :title => "Sign out", :'data-placement' => "bottom", :'data-toggle' => "tooltip")).html_safe, logout_path) %></li>
+        <% else %>
+          <li>
+            <%= link_to("Sign in with GitHub", login_path) %>
+          </li>
         <% end %>
       </ul>
     </div><!-- /.navbar-collapse -->

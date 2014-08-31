@@ -4,9 +4,8 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 
 require 'rubygems'
-gem 'minitest'
-require "minitest/pride"
 require 'minitest/autorun'
+require "minitest/pride"
 require 'minitest/focus'
 require 'action_controller/test_case'
 
@@ -17,6 +16,8 @@ require 'webmock/minitest'
 require "warden/github/rails/test_helpers"
 
 require File.join("#{File.expand_path(File.dirname(__FILE__))}", "jobs", "index_test.rb")
+require File.join("#{File.expand_path(File.dirname(__FILE__))}", "view_models", "pages_builds", "index_view.rb")
+require File.join("#{File.expand_path(File.dirname(__FILE__))}", "view_models", "webhooks", "add_view.rb")
 
 # Support files
 Dir[File.join("#{File.expand_path(File.dirname(__FILE__))}", "support", "*.rb")].each do |file|
@@ -32,8 +33,8 @@ DatabaseCleaner.strategy = :truncation
 
 class MiniTest::Spec
   include ActiveSupport::Testing::SetupAndTeardown
+  include Warden::GitHub::Rails::TestHelpers
   include MetaHelper
-  include WardenHelpers
   include BackgroundJobs
 
   # allow connections to elasticsearch
@@ -47,7 +48,7 @@ class MiniTest::Spec
     ActiveSupport::JSON.decode(fixture(name))
   end
 
-  def default_headers(event, remote_ip = "192.30.252.41")
+  def default_headers(event, remote_ip = "192.30.252.0/22")
     {
       'ACCEPT'                 => 'application/json' ,
       'CONTENT_TYPE'           => 'application/json',
@@ -71,6 +72,15 @@ class MiniTest::Spec
   after :each do
     DatabaseCleaner.clean
   end
+
+  def sign_in(user)
+    login_as(user, scope: :user)
+    visit('/')
+  end
+
+  def sign_out
+    logout(:user)
+  end
 end
 
 
@@ -89,6 +99,7 @@ MiniTest::Spec.register_spec_type( /Controller$/, ControllerSpec )
 
 class AcceptanceSpec < MiniTest::Spec
   include Rails.application.routes.url_helpers
+  include ActionController::TestCase::Behavior
   include Capybara::DSL
   include Warden::Test::Helpers
   Warden.test_mode!
@@ -101,18 +112,9 @@ class AcceptanceSpec < MiniTest::Spec
     Warden.test_reset!
   end
 
-  def sign_in(user)
-    login_as(user, scope: :user)
-    visit('/')
-  end
-
-  def sign_out
-    logout(:user)
-  end
-
   def default_url_options
     Rails.configuration.action_mailer.default_url_options
   end
 end
 
-MiniTest::Spec.register_spec_type( /Integration$/, AcceptanceSpec )
+MiniTest::Spec.register_spec_type( /Integration/, AcceptanceSpec )

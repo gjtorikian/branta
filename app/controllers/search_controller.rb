@@ -2,8 +2,11 @@ class SearchController < ApplicationController
   respond_to :html, :js, :xml, :json
   layout false
 
+  before_filter :cors_preflight_check
+  after_filter :cors_set_access_control_headers
+
   def index
-    per_page = 25
+    per_page = 10
     if ENV['BRANTA_PER_PAGE_COUNT'].to_i > 0
       per_page = [ ENV['BRANTA_PER_PAGE_COUNT'].to_i, 50 ].min
     end
@@ -79,5 +82,23 @@ class SearchController < ApplicationController
 
       render :json => result
     end
+  end
+
+  # For all responses in this controller, return the CORS access control headers.
+  def cors_set_access_control_headers
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Allow-Methods'] = 'HEAD, GET, OPTIONS'
+    headers['Access-Control-Max-Age'] = "1728000"
+  end
+
+  # If this is a preflight OPTIONS request, then short-circuit the
+  # request, return only the necessary headers and return an empty
+  # text/plain.
+
+  def cors_preflight_check
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Allow-Methods'] = 'HEAD, GET, OPTIONS'
+    headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-Prototype-Version'
+    headers['Access-Control-Max-Age'] = '1728000'
   end
 end
