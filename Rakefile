@@ -19,6 +19,7 @@ task "jobs:work" => "resque:work"
 namespace :deploy do
   desc 'Deploy the app'
   task :production do
+    ENV['IS_HEROKU']=1
     app = "branta-ghp"
     remote = "git@heroku.com:#{app}.git"
 
