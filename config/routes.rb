@@ -18,16 +18,24 @@ Branta::Application.routes.draw do
 
     get "/login"               => "sessions#create"
     get "/logout"              => "sessions#destroy"
-    get "/add_hook"            => "application#add_hook"
 
-    mount Resque::Server.new, :at => "/resque", constraints: ResqueWhitelistConstraint.new
+    github_authenticated do
+      get "/manage_webhook"      => "webhook#index"
+      post '/webhook/create'     => "webhook#create"
+      delete '/webhook/delete'   => "webhook#delete"
+      mount Resque::Server.new, :at => "/resque", constraints: ResqueWhitelistConstraint.new
+    end
+
   else
     github_authenticate(:org => ENV['GITHUB_BRANTA_ORG_NAME']) do
       root 'application#index'
 
       get "/login"               => "sessions#create"
       get "/logout"              => "sessions#destroy"
-      get "/add_hook"            => "application#add_hook"
+
+      get "/manage_webhook"      => "webhook#index"
+      post '/webhook/create'     => "webhook#create"
+      delete '/webhook/delete'   => "webhook#delete"
 
       mount Resque::Server.new, :at => "/resque"
     end
