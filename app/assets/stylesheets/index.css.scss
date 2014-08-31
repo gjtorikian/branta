@@ -1,0 +1,30 @@
+@import "variables";
+
+.intro-heading {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.numeric-point-wrapper {
+  text-align: center;
+  border: solid 1px #e5e5e5;
+  margin: 0 auto 15px;
+  display: block;
+
+  p {
+    margin-top: 10px
+  }
+}
+
+.numeric-point {
+  font: normal normal 48px octicons;
+  display: inline-block;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  color: $branta_tone;
+  line-height: 100px;
+}
+
+.robots-msg {
+  text-align: center;
+}
