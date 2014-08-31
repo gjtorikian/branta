@@ -28,8 +28,3 @@ namespace :deploy do
     system "heroku maintenance:off --app #{app}"
   end
 end
-
-# Heroku hack to compile assets during slug compilation
-task 'assets:precompile' do
-  puts `rake assets:precompile`
-end

@@ -20,7 +20,7 @@ Rails.application.configure do
   # config.action_dispatch.rack_cache = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this).
-  config.serve_static_assets = false
+  config.serve_static_assets = ENV['IS_HEROKU'].blank? : false : true
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
@@ -79,6 +79,15 @@ Rails.application.configure do
 
   config.logger = ActiveSupport::Logger.new STDOUT
   config.logger.level = Logger.const_get(ENV['LOG_LEVEL'] ? ENV['LOG_LEVEL'].upcase : 'INFO')
+
+  unless ENV['IS_HEROKU'].blank?
+    STDOUT.sync = config.autoflush_log
+    logger = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    logger.level = logger.class.const_get(config.log_level.to_s.upcase)
+
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
+  end
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
