@@ -6,7 +6,7 @@ class SearchController < ApplicationController
   after_filter :cors_set_access_control_headers
 
   def index
-    per_page = 25
+    per_page = 10
     if ENV['BRANTA_PER_PAGE_COUNT'].to_i > 0
       per_page = [ ENV['BRANTA_PER_PAGE_COUNT'].to_i, 50 ].min
     end
