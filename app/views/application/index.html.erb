@@ -1,5 +1,4 @@
 <% view = PagesBuilds::IndexView.new %>
-
 <% if !github_user %>
   <%= render partial: "elements/non_org_landing" %>
 <% else %>
@@ -47,6 +46,6 @@
       <% end %>
       </table>
     <% end %>
+  </div>
   <% end %>
-</div>
 <% end %>
