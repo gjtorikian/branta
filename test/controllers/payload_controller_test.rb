@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe WebhookController do
+describe PayloadController do
   setup do
     stub_meta
   end

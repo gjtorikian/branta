@@ -10,7 +10,7 @@ class ResqueWhitelistConstraint
 end
 
 Branta::Application.routes.draw do
-  post "/post_receive"         => "webhook#create"
+  post "/post_receive"         => "payload#create"
   get "/search"                => "search#index"
 
   if ENV['GITHUB_BRANTA_ORG_NAME'].nil?

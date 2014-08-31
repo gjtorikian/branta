@@ -1,5 +1,6 @@
-class WebhookController < ApplicationController
-  include WebhookValidations
+class PayloadController < ApplicationController
+
+  include PayloadValidations
 
   before_filter :verify_incoming_webhook_address!
   skip_before_filter :verify_authenticity_token, :only => [:create]

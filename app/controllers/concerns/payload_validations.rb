@@ -1,4 +1,4 @@
-module WebhookValidations
+module PayloadValidations
   extend ActiveSupport::Concern
 
   def verify_incoming_webhook_address!
