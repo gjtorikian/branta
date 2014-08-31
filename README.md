@@ -44,9 +44,8 @@ $.ajax({
   crossDomain: true,
   dataType: "json"
 }).done(function(data) {
-  var results;
-  results = data != null ? data.results : void 0;
-  if ((results != null ? results.length : void 0) > 0) {
+  var results = data != null ? data.results : null;
+  if (results != null && results.length > 0) {
     // iterate over results
   }
 });
