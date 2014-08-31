@@ -10,9 +10,13 @@
 
 <body id="main">
 
-  <%= render partial: "elements/navbar" %>
-  <%= bootstrap_flash %>
+  <% if !github_user && !ENV['GITHUB_BRANTA_ORG_NAME'].blank? %>
+    <%= render partial: "elements/blocked_org_landing" %>
+  <% else %>
+    <%= render partial: "elements/navbar" %>
+    <%= bootstrap_flash %>
 
-  <%= yield %>
+    <%= yield %>
+  <% end %>
 </body>
 </html>

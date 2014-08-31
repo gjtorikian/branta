@@ -4,7 +4,7 @@
   <%= render partial: "elements/non_org_landing" %>
 <% else %>
   <div class="container">
-  <% if !ENV['GITHUB_BRANTA_ORG_NAME'].nil? %>
+  <% if !ENV['GITHUB_BRANTA_ORG_NAME'].blank? %>
     <% if view.empty_for_org? %>
       <h1>No GitHub Pages sites have been indexed for y'all...yet.</h1>
     <% else %>
