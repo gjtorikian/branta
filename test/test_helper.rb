@@ -17,6 +17,7 @@ require "warden/github/rails/test_helpers"
 
 require File.join("#{File.expand_path(File.dirname(__FILE__))}", "jobs", "index_test.rb")
 require File.join("#{File.expand_path(File.dirname(__FILE__))}", "view_models", "pages_builds", "index_view.rb")
+require File.join("#{File.expand_path(File.dirname(__FILE__))}", "view_models", "webhooks", "add_view.rb")
 
 # Support files
 Dir[File.join("#{File.expand_path(File.dirname(__FILE__))}", "support", "*.rb")].each do |file|
@@ -71,6 +72,15 @@ class MiniTest::Spec
   after :each do
     DatabaseCleaner.clean
   end
+
+  def sign_in(user)
+    login_as(user, scope: :user)
+    visit('/')
+  end
+
+  def sign_out
+    logout(:user)
+  end
 end
 
 
@@ -100,15 +110,6 @@ class AcceptanceSpec < MiniTest::Spec
 
   after do
     Warden.test_reset!
-  end
-
-  def sign_in(user)
-    login_as(user, scope: :user)
-    visit('/')
-  end
-
-  def sign_out
-    logout(:user)
   end
 
   def default_url_options

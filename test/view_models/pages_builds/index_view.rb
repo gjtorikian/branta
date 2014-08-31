@@ -5,7 +5,9 @@ describe PagesBuilds::IndexView do
     5.times do |i|
       hash = {
                :owner => "gjtorikian",
-               :name => "branta#{i}"
+               :name => "branta#{i}",
+               :name_with_owner => "gjtorikian/branta#{i}",
+               :hook_id => i * 8
              }
       Repository.create hash
     end
