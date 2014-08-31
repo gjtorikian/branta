@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140822011626) do
+ActiveRecord::Schema.define(version: 20140831043437) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,10 +31,14 @@ ActiveRecord::Schema.define(version: 20140822011626) do
   create_table "repositories", force: true do |t|
     t.string   "owner"
     t.string   "name"
-    t.boolean  "active",     default: true
+    t.boolean  "active",          default: true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name_with_owner"
+    t.string   "hook_id"
   end
+
+  add_index "repositories", ["name_with_owner"], name: "index_repositories_on_name_with_owner", using: :btree
 
   create_table "users", force: true do |t|
     t.string  "login",                  null: false

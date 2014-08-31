@@ -12,7 +12,7 @@ class CreateRepositories < ActiveRecord::Migration
 
     PagesBuild.all.each do |build|
       owner, name = build.name_with_owner.split('/')
-      repository = Repository.find_or_create_by(owner: owner, name: name)
+      repository = Repository.find_or_create_by(owner: owner, name: name, name_with_owner: build.name_with_owner)
       build.repository = repository
       build.save
     end
