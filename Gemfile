@@ -19,6 +19,7 @@ gem 'nokogiri', '~> 1.5'
 gem 'pismo', '~> 0.7.4'
 gem 'sitemap-parser', '~> 0.2'
 gem 'anemone', '~> 0.7'
+gem 'typhoeus', '~> 0.6'
 
 # assets stuff
 gem 'sass-rails', '~> 4.0.3'
