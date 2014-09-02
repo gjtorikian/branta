@@ -150,7 +150,6 @@ GEM
       nokogiri
     octokit (3.3.1)
       sawyer (~> 0.5.3)
-    patron (0.4.18)
     pg (0.17.1)
     pismo (0.7.4)
       awesome_print
@@ -303,7 +302,6 @@ DEPENDENCIES
   mocha (~> 1.1.0)
   nokogiri (~> 1.5)
   octokit
-  patron (~> 0.4.18)
   pg (~> 0.17.1)
   pismo (~> 0.7.4)
   rails (= 4.1.4)

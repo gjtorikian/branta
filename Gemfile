@@ -18,7 +18,6 @@ gem 'elasticsearch-persistence', '~> 0.1'
 gem 'nokogiri', '~> 1.5'
 gem 'pismo', '~> 0.7.4'
 gem 'sitemap-parser', '~> 0.2'
-gem 'patron', '~> 0.4.18'
 gem 'anemone', '~> 0.7'
 
 # assets stuff
@@ -29,7 +28,7 @@ gem 'jquery-rails'
 gem 'bootstrap-sass', '~> 3.2'
 gem 'bootstrap-sass-extras'
 
-gem 'rails_12factor'
+gem 'rails_12factor', group: :production
 
 group :test do
   gem 'minitest-rails'
