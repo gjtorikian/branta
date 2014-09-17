@@ -57,5 +57,5 @@ compiling writev.c
 linking shared-object kgio_ext.bundle
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 kgio_ext.bundle ./.gem.20140821-65151-1qsrmlw
+/usr/bin/install -c -m 0755 kgio_ext.bundle ./.gem.20140916-23898-15n4kdq
 installing default kgio_ext libraries

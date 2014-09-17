@@ -20,6 +20,7 @@ gem 'pismo', '~> 0.7.4'
 gem 'sitemap-parser', '~> 0.2'
 gem 'anemone', '~> 0.7'
 gem 'typhoeus', '~> 0.6'
+gem 'robotstxt', '~> 0.5'
 
 # assets stuff
 gem 'sass-rails', '~> 4.0.3'
