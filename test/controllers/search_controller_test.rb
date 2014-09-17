@@ -3,6 +3,7 @@ require "test_helper"
 describe SearchController do
   setup do
     Branta::IndexManager.create_index(true)
+    repos = []
     5.times do |i|
       hash = {
                :title => "item #{i} of five entries",
@@ -10,8 +11,10 @@ describe SearchController do
                :path => "/path/#{i}/article",
                :repo => "gjtorikian/repo#{i}"
              }
+      repos << "gjtorikian/repo#{i}"
       Page.create hash
     end
+    @multiple_repo_qualifier = { :repo => repos.join(",") }
     Page.gateway.refresh_index!
   end
 
@@ -28,7 +31,7 @@ describe SearchController do
 
   describe 'results in the body' do
     it 'can find results in the body' do
-      make_request("administrate")
+      make_request("administrate", @multiple_repo_qualifier)
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -42,7 +45,7 @@ describe SearchController do
     end
 
     it 'can take singular words and match plural words in the body' do
-      make_request("market")
+      make_request("market", @multiple_repo_qualifier)
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -53,7 +56,7 @@ describe SearchController do
     end
 
     it 'can take plural words and match singular words in the body' do
-      make_request("visualizes")
+      make_request("visualizes", @multiple_repo_qualifier)
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -66,7 +69,7 @@ describe SearchController do
 
   describe 'results in the title' do
     it 'can find results in the title' do
-      make_request("item")
+      make_request("item", @multiple_repo_qualifier)
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -80,7 +83,7 @@ describe SearchController do
     end
 
     it 'can take singular words and match plural words in the title' do
-      make_request("entry")
+      make_request("entry", @multiple_repo_qualifier)
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -91,7 +94,7 @@ describe SearchController do
     end
 
     it 'can take plural words and match singular words in the title' do
-      make_request("items")
+      make_request("items", @multiple_repo_qualifier)
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -112,7 +115,7 @@ describe SearchController do
     end
 
     it 'limits the results' do
-      make_request("administrate")
+      make_request("administrate", @multiple_repo_qualifier)
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -121,7 +124,7 @@ describe SearchController do
     end
 
     it 'can get a page of results' do
-      make_request("administrate", {:page => 4})
+      make_request("administrate", @multiple_repo_qualifier.merge({:page => 4}))
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -134,7 +137,7 @@ describe SearchController do
 
   describe 'sorting' do
     it 'properly sorts the results' do
-      make_request("administrate", {:order => "desc", :sort => "updated_at"})
+      make_request("administrate", @multiple_repo_qualifier.merge({:order => "desc", :sort => "updated_at"}))
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -195,7 +198,7 @@ describe SearchController do
     end
 
     it 'properly scopes to a full path' do
-      make_request("entry", {:path => "x/y"})
+      make_request("entry", {:repo => "gjtorikian/repo1", :path => "x/y"})
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -206,7 +209,7 @@ describe SearchController do
     end
 
     it 'properly scopes to the start of a path' do
-      make_request("entry", {:path => "x"})
+      make_request("entry", {:repo => "gjtorikian/repo1", :path => "x"})
 
       assert_response response.status, 200
       body = JSON.parse(response.body)
@@ -214,6 +217,26 @@ describe SearchController do
 
       result = body["results"][1]
       result["title"].must_match "item x-y-1 of five <span class=\"search-term\">entries</span>"
+    end
+  end
+
+  describe 'required qualifiers' do
+    it 'needs the q qualifier' do
+      make_request(nil, {:repo => "gjtorikian/repo2"})
+
+      assert_response response.status, 422
+      body = JSON.parse(response.body)
+
+      body['error'].must_match "You must provide the 'q' parameter for a query!"
+    end
+
+    it 'needs the repo qualifier' do
+      make_request("entry")
+
+      assert_response response.status, 422
+      body = JSON.parse(response.body)
+
+      body['error'].must_match "You must provide the 'repo' parameter for a query!"
     end
   end
 end
