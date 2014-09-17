@@ -133,8 +133,4 @@ If you're running Branta yourself, you should set the following environment vari
 |`GITHUB_BRANTA_ORG_NAME` | Restricts access to Branta to just users within the `GITHUB_BRANTA_ORG_NAME` GitHub organization.
 | `BRANTA_PER_PAGE_COUNT` | The number of results to return per page. Default is 25, maximum is 50.
 
-### TODO:
-
-- Some kind of "oh shit" reindex everything task
-
 [PageBuildEvent]: https://developer.github.com/v3/activity/events/types/#pagebuildevent
