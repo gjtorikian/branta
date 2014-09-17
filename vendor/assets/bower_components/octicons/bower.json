@@ -19,9 +19,5 @@
     "font",
     "web font",
     "icon font"
-  ],
-  "ignore": [
-    "**/.*",
-    "bower_components"
   ]
 }

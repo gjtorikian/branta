@@ -4,6 +4,4 @@ export IS_HEROKU="1"
 
 bundle install --binstubs --local --path vendor/gems
 
-bower install
-
 script/setup
