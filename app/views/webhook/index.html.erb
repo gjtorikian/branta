@@ -1,7 +1,7 @@
 <div class="container">
 
 <p class="lead text-center">
-  Before Branta can index your site, you'll need to add a <a href="https://developer.github.com/webhooks/">webhook</a> to your repository.
+  Before Branta can index your site, you'll need to add a <a href="https://developer.github.com/webhooks/">webhook</a> to your Pages repository.
 </p>
 <p class="text-center">
   Click on a button below to add a hook to Branta to your repository. You can also remove existing hooks.
@@ -12,28 +12,28 @@
 </div>
 
 <% add_view = Webhooks::AddView.new %>
-<% @repositories ||= github_user.api.repositories %>
+<% @repositories ||= github_user.api.repositories.select { |r| r['has_pages'] } %>
 <% unless @repositories.empty? %>
   <% if @repositories.empty? %>
     <h1>You have repositories, but none of them have GitHub Pages!</h1>
   <% else %>
     <table class="repo-list table table-bordered table-striped table-hover">
       <tr>
-        <th>Name</th>
+        <th>Repository</th>
         <th>Configure Branta Webhook</th>
       </tr>
     <% @repositories.each do |repo| %>
       <% next unless repo["permissions"]["admin"] %>
       <% @has_hook = add_view.has_hook_to_branta?(repo["full_name"]) %>
       <tr>
-        <td><%= repo["full_name"] %></td>
+        <td><a href="<%= repo['html_url']%>"><%= repo["full_name"] %></a></td>
         <td>
           <% unless @has_hook %>
-            <%= button_tag "#", :remote => true, :class => 'btn btn-default add-hook-button', :'data-repo-name' => repo["full_name"] do %>
+            <%= button_tag "#", :remote => true, :class => 'btn btn-default webhook-button add-hook-button', :'data-repo-name' => repo["full_name"] do %>
               <%= octicon("zap") %> Let's do this!
             <% end %>
           <% else %>
-            <%= button_tag "#", :remote => true, :class => 'btn btn-default remove-hook-button', :'data-repo-name' => repo["full_name"] do %>
+            <%= button_tag "#", :remote => true, :class => 'btn btn-default webhook-button remove-hook-button', :'data-repo-name' => repo["full_name"] do %>
               <%= octicon("x") %> Remove it, please!
             <% end %>
           <% end %>
