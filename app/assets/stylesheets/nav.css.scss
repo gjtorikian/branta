@@ -4,3 +4,11 @@
   margin-bottom: 0px;
   border-radius: 0px;
 }
+
+body.pages_controller #topnav.navbar .about a {
+  color: #ffffff;
+}
+
+body.webhook_controller #topnav.navbar .manage a {
+  color: #ffffff;
+}
