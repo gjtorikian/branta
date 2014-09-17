@@ -9,6 +9,8 @@ Branta is a Rails app that listens for [`PageBuildEvent`][PageBuildEvent]s sent 
 
 When your page builds successfully, Branta walks over your site and indexes all the content. Branta prefers that you have a *sitemap.xml* file defined at your root, as it makes indexing the content of your site much easier and more reliable (via [sitemap-parser](https://github.com/benbalter/sitemap-parser)). Otherwise, it uses [Anemone](https://github.com/chriskite/anemone) to walk over all your pages.
 
+A *robots.txt* file, if it exists, is respected. The UserAgent is called `Branta`.
+
 ## What does it index?
 
 The following parts of each page are indexed:
