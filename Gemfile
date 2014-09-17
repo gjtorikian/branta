@@ -20,7 +20,7 @@ gem 'pismo', '~> 0.7.4'
 gem 'sitemap-parser', '~> 0.2'
 gem 'anemone', '~> 0.7'
 gem 'typhoeus', '~> 0.6'
-gem 'robotstxt', '~> 0.5'
+gem 'robotstxt', :github => 'gjtorikian/robotstxt', :ref => '300ef460590e9b79f4e2a74462cfc32212e9841c'
 
 # assets stuff
 gem 'sass-rails', '~> 4.0.3'

@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/gjtorikian/robotstxt.git
+  revision: 300ef460590e9b79f4e2a74462cfc32212e9841c
+  ref: 300ef460590e9b79f4e2a74462cfc32212e9841c
+  specs:
+    robotstxt (0.5.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -203,7 +210,6 @@ GEM
     resque-lock-timeout (0.4.4)
       resque (~> 1.22)
     robotex (1.0.0)
-    robotstxt (0.5.4)
     safe_yaml (1.0.3)
     sanitize (3.0.2)
       crass (~> 0.2.0)
@@ -313,7 +319,7 @@ DEPENDENCIES
   rerun (~> 0.10)
   resque (~> 1.25)
   resque-lock-timeout (~> 0.4)
-  robotstxt (~> 0.5)
+  robotstxt!
   sass-rails (~> 4.0.3)
   shoulda-matchers
   sitemap-parser (~> 0.2)

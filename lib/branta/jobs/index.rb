@@ -35,7 +35,7 @@ module Branta
         redis_lock_key(guid, payload, repository)
       end
 
-      attr_accessor :guid, :payload, :repository, :hydra
+      attr_accessor :guid, :payload, :repository
 
       def initialize(guid, payload, repository)
         @guid = guid
@@ -137,18 +137,21 @@ module Branta
         hydra   = Typhoeus::Hydra.new
         sitemap = SitemapParser.new get_sitemap
 
-        robotstxt_found = Branta.robot.get domain_name
+        robot = Robotstxt.get(domain_name, "Branta")
 
         if sitemap.to_a.empty?
           Anemone.crawl(domain_name, :discard_page_bodies => true) do |anemone|
             anemone.on_every_page do |page|
-              puts robotstxt_found
-              hydra.queue queue_request(page.url) if !robotstxt_found || robotstxt_allows_url?(page.url)
+              next unless robot.allowed?(page.url)
+              request = queue_request(page.url)
+              hydra.queue(request)
             end
           end
         else
           sitemap.to_a.each do |url|
-            hydra.queue queue_request(url) if !robotstxt_found || robotstxt_allows_url?(url)
+            next unless robot.allowed?(url)
+            request = queue_request(url)
+            hydra.queue(request)
           end
         end
 

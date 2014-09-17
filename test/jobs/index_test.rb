@@ -49,7 +49,7 @@ describe Branta::Jobs::Index do
     it 'deals with a missing CNAME' do
       stub_request(:get, "https://api.github.com/repos/baxterthehacker/public-repo/contents/CNAME?client_id=%3Cunknown-client-id%3E&client_secret=%3Cunknown-client-secret%3E").
         with(:headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"Octokit Ruby Gem #{octokit_version}"}).
-        to_return(:status => 404, :body => "", :headers => {})
+        to_return(:status => 404, :body => nil, :headers => {})
 
       Branta::Jobs::Index.stubs(:repo_name_with_owner).returns("baxterthehacker/public-repo")
       Branta::Jobs::Index.stubs(:repo_owner).returns("baxterthehacker")
@@ -59,20 +59,20 @@ describe Branta::Jobs::Index do
     end
   end
 
-  # focus
   describe 'parsing sitemaps' do
 
     describe 'dealing with an existing sitemap' do
-      it 'works when there is a permissive robotstxt' do
+      before do
         Branta::Jobs::Index.stubs(:domain_name).returns("http://ben.balter.com")
-        Branta.robot.expects(:get).returns(true)
 
         stub_request(:get, "http://ben.balter.com/sitemap.xml").
           with(:headers => {'User-Agent'=>'Typhoeus - https://github.com/typhoeus/typhoeus'}).
           to_return(:status => 200, :body => sitemap, :headers => {})
+      end
 
+      it 'works when there is a permissive robotstxt' do
         stub_request(:get, "http://ben.balter.com/robots.txt").
-          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Branta'}).
           to_return(:status => 200, :body => robotstxt_permit, :headers => {})
 
         # don't really care about the body here, only that we get urls
@@ -84,16 +84,9 @@ describe Branta::Jobs::Index do
       end
 
       it 'works when there is a missing robotstxt' do
-        Branta::Jobs::Index.stubs(:domain_name).returns("http://ben.balter.com")
-        Branta.robot.expects(:get).returns(false)
-
-        stub_request(:get, "http://ben.balter.com/sitemap.xml").
-          with(:headers => {'User-Agent'=>'Typhoeus - https://github.com/typhoeus/typhoeus'}).
-          to_return(:status => 200, :body => sitemap, :headers => {})
-
         stub_request(:get, "http://ben.balter.com/robots.txt").
-          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
-          to_return(:status => 200, :body => "", :headers => {})
+          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Branta'}).
+          to_return(:status => 200, :body => " ", :headers => {})
 
         # don't really care about the body here, only that we get urls
         stub_request(:get, /ben\.balter\.com\/2014\//)
@@ -104,32 +97,28 @@ describe Branta::Jobs::Index do
       end
 
       it 'does not work when robotstxt denies it' do
-        Branta::Jobs::Index.stubs(:domain_name).returns("http://ben.balter.com")
-
-        stub_request(:get, "http://ben.balter.com/sitemap.xml").
-          with(:headers => {'User-Agent'=>'Typhoeus - https://github.com/typhoeus/typhoeus'}).
-          to_return(:status => 200, :body => sitemap, :headers => {})
-
         stub_request(:get, "http://ben.balter.com/robots.txt").
-          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Branta'}).
           to_return(:status => 200, :body => robotstxt_deny, :headers => {})
 
         # don't really care about the body here, only that we get urls
         stub_request(:get, /ben\.balter\.com\/2014\//)
+
+        Branta::Jobs::Index.expects(:queue_request).never
 
         Branta::Jobs::Index.perform(guid, payload, repository)
       end
     end
 
     describe 'deals with a missing sitemap' do
-
-      it 'works when there is a permissive robotstxt' do
+      before do
         Branta::Jobs::Index.stubs(:get_sitemap).returns(nil)
         Branta::Jobs::Index.stubs(:domain_name).returns("http://ben.balter.com")
-        Branta::Jobs::Index.stubs(:robotstxt_allows_url?).returns(true)
+      end
 
+      it 'works when there is a permissive robotstxt' do
         stub_request(:get, "http://ben.balter.com/robots.txt").
-          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Branta'}).
           to_return(:status => 200, :body => robotstxt_permit, :headers => {})
 
         Anemone.expects(:crawl).with("http://ben.balter.com", {:discard_page_bodies => true}).returns(true)
@@ -138,13 +127,9 @@ describe Branta::Jobs::Index do
       end
 
       it 'works when there is a missing robotstxt' do
-        Branta::Jobs::Index.stubs(:get_sitemap).returns(nil)
-        Branta::Jobs::Index.stubs(:domain_name).returns("http://ben.balter.com")
-        Branta.robot.expects(:get).returns(false)
-
         stub_request(:get, "http://ben.balter.com/robots.txt").
-          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
-          to_return(:status => 404)
+          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Branta'}).
+          to_return(:status => 200, :body => " ", :headers => {})
 
         Anemone.expects(:crawl).with("http://ben.balter.com", {:discard_page_bodies => true}).returns(true)
 
@@ -155,16 +140,8 @@ describe Branta::Jobs::Index do
       end
 
       it 'does not work when robotstxt denies it' do
-        Branta::Jobs::Index.stubs(:get_sitemap).returns(nil)
-        Branta::Jobs::Index.stubs(:domain_name).returns("http://ben.balter.com")
-        Branta::Jobs::Index.stubs(:robotstxt_allows_url?).returns(false)
-
         stub_request(:get, "http://ben.balter.com/robots.txt").
-          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
-          to_return(:status => 200, :body => robotstxt_deny, :headers => {})
-
-        stub_request(:get, "http://ben.balter.com/robots.txt").
-          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+          with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Branta'}).
           to_return(:status => 200, :body => robotstxt_deny, :headers => {})
 
         Anemone.expects(:crawl).with("http://ben.balter.com", {:discard_page_bodies => true}).once
