@@ -134,7 +134,6 @@ If you're running Branta yourself, you should set the following environment vari
 ### TODO:
 
 - Some kind of "oh shit" reindex everything task
-- Enforce requiring repo and q
 - Forbid non-org indexing
 
 [PageBuildEvent]: https://developer.github.com/v3/activity/events/types/#pagebuildevent

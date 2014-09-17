@@ -6,6 +6,16 @@ class SearchController < ApplicationController
   after_filter :cors_set_access_control_headers
 
   def index
+    if params[:q].nil?
+      response = { :status => 422, :error =>  "You must provide the 'q' parameter for a query!" }.to_json
+      render :status => 422, :json => response and return;
+    end
+
+    if params[:repo].nil?
+      response = { :status => 422, :error =>  "You must provide the 'repo' parameter for a query!" }.to_json
+      render :status => 422, :json => response and return;
+    end
+
     per_page = 10
     if ENV['BRANTA_PER_PAGE_COUNT'].to_i > 0
       per_page = [ ENV['BRANTA_PER_PAGE_COUNT'].to_i, 50 ].min
@@ -14,35 +24,26 @@ class SearchController < ApplicationController
     page  = [ params[:page].to_i, 1 ].max
     sort  = params[:sort] || '_score'
     order  = params[:order] || 'desc'
-    repo  = params[:repo] || nil
+    repo  = params[:repo]
     path  = params[:path] || nil
 
-    if repo.nil? && path.nil?
-      query = {
-            multi_match: {
-              query: params[:q],
-              fields: ['title^1', 'body']
-            }
+    query = {
+      filtered: {
+        query: {
+          multi_match: {
+            query: params[:q],
+            fields: ['title^1', 'body']
           }
-    else
-      query = {
-        filtered: {
-          query: {
-            multi_match: {
-              query: params[:q],
-              fields: ['title^1', 'body']
-            }
-          },
-          filter: {
-            terms: {
-            }
+        },
+        filter: {
+          terms: {
           }
         }
       }
+    }
 
-      query[:filtered][:filter][:terms][:repo] = repo.split(",") if !repo.nil?
-      query[:filtered][:filter][:terms][:repo] = path.split(",") if !path.nil?
-    end
+    query[:filtered][:filter][:terms][:repo] = repo.split(",")
+    query[:filtered][:filter][:terms][:path] = path.split(",") if !path.nil?
 
     assembled_query = { query: query,
             highlight: {
