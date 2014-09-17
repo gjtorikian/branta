@@ -5,10 +5,14 @@
   border-radius: 0px;
 }
 
-body.pages_controller #topnav.navbar .about a {
+body.about-page #topnav.navbar .about a {
   color: #ffffff;
 }
 
-body.webhook_controller #topnav.navbar .manage a {
+body.donate-page #topnav.navbar .donate a {
+  color: #ffffff;
+}
+
+body.manage_webhook-page #topnav.navbar .manage a {
   color: #ffffff;
 }

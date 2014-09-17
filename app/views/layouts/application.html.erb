@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
 
-<body id="main" class="<%= params[:controller].split('/').last %>_controller">
+<body id="main" class="<%= request.original_url.split('/').last %>-page">
 
   <% if !github_user && !ENV['GITHUB_BRANTA_ORG_NAME'].blank? %>
     <%= render partial: "elements/blocked_org_landing" %>

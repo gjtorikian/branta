@@ -20,6 +20,9 @@
         <li class='about'>
           <%= link_to 'About', page_path('about') %>
         </li>
+        <li class='donate'>
+          <%= link_to 'Donate', page_path('donate') %>
+        </li>
         <% if github_authenticated? %>
           <li class='manage'>
             <%= link_to 'Manage webhooks', manage_webhook_path %>
