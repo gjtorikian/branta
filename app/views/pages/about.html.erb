@@ -3,14 +3,24 @@
     Here's an attempted breakdown on how this works.
   </p>
 
-  <h2>Step One: You add a webhook</h2>
-    <p>Branta needs to add a <a href="https://developer.github.com/webhooks/">webhook</a> to your GitHub Pages repository.
-       Webhooks allow services to communicate with your GitHub repository. In this case, the webhook relies on the <code><a href="https://developer.github.com/v3/activity/events/types/#pagebuildevent">PageBuildEvent</a></code>.
-       On every successful GitHub Pages build, Branta will start the indexer and reindex you site for search.</p>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Step One: You add a webhook</h3>
+    </div>
+    <div class="panel-body">
+      <p>Branta needs to add a <a href="https://developer.github.com/webhooks/">webhook</a> to your GitHub Pages repository.
+         Webhooks allow services to communicate with your GitHub repository. In this case, the webhook relies on the <code><a href="https://developer.github.com/v3/activity/events/types/#pagebuildevent">PageBuildEvent</a></code>.
+         On every successful GitHub Pages build, Branta will start the indexer and reindex you site for search.</p>
+    </div>
+  </div>
 
-  <h2>Step Two: The indexing begins</h2>
-    <p>Content from your website is fetched using <a href="https://github.com/peterc/pismo">Pismo</a> (to fetch interesting information) and <a href="https://github.com/sparklemotion/nokogiri">Nokogiri</a> (to fetch the body contents).
-        Your site is crawled in one of two ways:
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Step Two: The indexing begins</h3>
+    </div>
+    <div class="panel-body">
+      <p>Content from your website is fetched using <a href="https://github.com/peterc/pismo">Pismo</a> (to fetch interesting information) and <a href="https://github.com/sparklemotion/nokogiri">Nokogiri</a> (to fetch the body contents).
+    Your site is crawled in one of two ways:
         <ul>
           <li>If you have a <a href="http://www.sitemaps.org/protocol.html">sitemap.xml</a> in your web page's root, good on you! Branta will use it to efficiently crawl through your site.</p>
           </li>
@@ -18,12 +28,21 @@
               Note that this is slower and potentially more inaccurate.</p>
           </li>
         </ul>
-    </p>
-    <p>
-      Either way, all of your information is indexed into <a href="http://www.elasticsearch.org/">ElasticSearch</a>. A robots.txt file (if it exists) is also respected.
-    </p>
+      </p>
+      <p>
+        Either way, all of your information is indexed into <a href="http://www.elasticsearch.org/">ElasticSearch</a>. A robots.txt file (if it exists) is also respected.
+      </p>
+    </div>
+  </div>
 
-  <h2>Step Three: You ask for your content</h2>
-    <p>This is the fun part. By querying Branta with AJAX, you'll be able to return search results from your web page.</p>
-    <p>Check out the README for examples!</p>
+
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Step Three: You ask for your content</h3>
+    </div>
+    <div class="panel-body">
+      <p>This is the fun part. By querying Branta with AJAX, you'll be able to return search results from your web page.</p>
+      <p>Check out the README for examples!</p>
+    </div>
+  </div>
 </div>

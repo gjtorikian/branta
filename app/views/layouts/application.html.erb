@@ -2,13 +2,14 @@
 <html>
 <head>
   <title>Branta: Search for GitHub Pages</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/sandstone/bootstrap.min.css">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
 
-<body id="main">
+<body id="main" class="<%= request.original_url.split('/').last %>-page">
 
   <% if !github_user && !ENV['GITHUB_BRANTA_ORG_NAME'].blank? %>
     <%= render partial: "elements/blocked_org_landing" %>

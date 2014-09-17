@@ -2,15 +2,17 @@
 
 #topnav.navbar {
   margin-bottom: 0px;
+  border-radius: 0px;
 }
 
-#hero.jumbotron {
-  color: white;
-  background-color: $branta_tone;
+body.about-page #topnav.navbar .about a {
+  color: #ffffff;
 }
 
-#topnav {
-  a, p {
-    color: $branta_tone;
-  }
+body.donate-page #topnav.navbar .donate a {
+  color: #ffffff;
+}
+
+body.manage_webhook-page #topnav.navbar .manage a {
+  color: #ffffff;
 }

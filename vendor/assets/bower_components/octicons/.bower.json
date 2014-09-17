@@ -20,18 +20,14 @@
     "web font",
     "icon font"
   ],
-  "ignore": [
-    "**/.*",
-    "bower_components"
-  ],
-  "version": "2.1.1",
-  "_release": "2.1.1",
+  "version": "2.1.0",
+  "_release": "2.1.0",
   "_resolution": {
     "type": "version",
-    "tag": "v2.1.1",
-    "commit": "1643d0e3826b8274ed083d64574f45b73c4a09ef"
+    "tag": "v2.1.0",
+    "commit": "4c9c01298a37a384946da99b9238e923567aa59f"
   },
   "_source": "git://github.com/github/octicons.git",
-  "_target": "~2.1.0",
+  "_target": "2.1.0",
   "_originalSource": "octicons"
 }

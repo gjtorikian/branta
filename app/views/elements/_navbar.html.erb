@@ -17,11 +17,14 @@
         <li>
           <a href="https://www.github.com/gjtorikian/branta"><%= octicon("mark-github", :title => "Source on GitHub", :'data-placement' => "bottom", :'data-toggle' => "tooltip").html_safe %></a>
         </li>
-        <li>
+        <li class='about'>
           <%= link_to 'About', page_path('about') %>
         </li>
+        <li class='donate'>
+          <%= link_to 'Donate', page_path('donate') %>
+        </li>
         <% if github_authenticated? %>
-          <li>
+          <li class='manage'>
             <%= link_to 'Manage webhooks', manage_webhook_path %>
           </li>
         <% end %>
