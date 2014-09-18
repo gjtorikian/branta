@@ -5,6 +5,8 @@ require "awesome_print"
 
 require 'typhoeus'; require 'typhoeus/adapters/faraday'
 
+require 'robotstxt'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)

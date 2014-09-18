@@ -90,7 +90,7 @@ int t(void) { mremap(); return 0; }
 1 warning generated.
 Undefined symbols for architecture x86_64:
   "_mremap", referenced from:
-      _t in conftest-9f3b8a.o
+      _t in conftest-481880.o
 ld: symbol(s) not found for architecture x86_64
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 checked program was:

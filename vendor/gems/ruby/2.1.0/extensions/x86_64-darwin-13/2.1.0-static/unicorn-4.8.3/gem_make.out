@@ -14,5 +14,5 @@ compiling unicorn_http.c
 linking shared-object unicorn_http.bundle
 
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 unicorn_http.bundle ./.gem.20140821-65146-1g0hbrz
+/usr/bin/install -c -m 0755 unicorn_http.bundle ./.gem.20140916-23892-pf3rth
 installing default unicorn_http libraries

@@ -2,6 +2,7 @@ require 'uri'
 require 'sitemap-parser'
 require 'pismo'
 require "base64"
+require 'robotstxt'
 
 module Branta
   module Jobs
@@ -34,7 +35,7 @@ module Branta
         redis_lock_key(guid, payload, repository)
       end
 
-      attr_accessor :guid, :payload, :repository, :hydra
+      attr_accessor :guid, :payload, :repository
 
       def initialize(guid, payload, repository)
         @guid = guid
@@ -42,15 +43,15 @@ module Branta
         @repository = repository
       end
 
-      def self.name
+      def self.repo_name
         @payload["repository"]["name"]
       end
 
-      def self.owner
+      def self.repo_owner
         @payload["repository"]["owner"]["login"]
       end
 
-      def self.name_with_owner
+      def self.repo_name_with_owner
         @payload['repository']['full_name']
       end
 
@@ -65,8 +66,8 @@ module Branta
       def self.record
         PagesBuild.create(:status          => "built",
                           :guid            => @guid,
-                          :name            => name,
-                          :name_with_owner => name_with_owner,
+                          :name            => repo_name,
+                          :name_with_owner => repo_name_with_owner,
                           :pusher          => pusher,
                           :sha             => sha,
                           :repository_id   => @repository["id"])
@@ -78,10 +79,10 @@ module Branta
 
       def self.domain_name
         "http://" << begin
-          content = Branta::ApiClient.oauth_client_api.contents(name_with_owner, :path => 'CNAME')[:content]
+          content = Branta::ApiClient.oauth_client_api.contents(repo_name_with_owner, :path => 'CNAME')[:content]
           Base64.decode64(content).strip
         rescue TypeError, Octokit::NotFound # 404, no CNAME
-          "#{owner}.github.io/#{name}"
+          "#{repo_owner}.github.io/#{repo_name}"
         end
       end
 
@@ -98,6 +99,10 @@ module Branta
         else
           logger.error "#{response.code} for #{url}"
         end
+      end
+
+      def self.robotstxt_allows_url?(url)
+        Branta.robot.allowed?(url)
       end
 
       def self.index_page(url, contents)
@@ -120,7 +125,7 @@ module Branta
         document[:title] = pismo_doc.titles.first.nil? ? [] : pismo_doc.titles
         document[:last_updated] = pismo_doc.datetime
         document[:path] = URI(url).path
-        document[:repo] = name_with_owner
+        document[:repo] = repo_name_with_owner
 
         Page.create document
       end
@@ -132,16 +137,21 @@ module Branta
         hydra   = Typhoeus::Hydra.new
         sitemap = SitemapParser.new get_sitemap
 
-        # TODO: deal with robotstxt
+        robot = Robotstxt.get(domain_name, "Branta")
+
         if sitemap.to_a.empty?
           Anemone.crawl(domain_name, :discard_page_bodies => true) do |anemone|
             anemone.on_every_page do |page|
-              hydra.queue queue_request(page.url)
+              next unless robot.allowed?(page.url)
+              request = queue_request(page.url)
+              hydra.queue(request)
             end
           end
         else
           sitemap.to_a.each do |url|
-            hydra.queue queue_request(url)
+            next unless robot.allowed?(url)
+            request = queue_request(url)
+            hydra.queue(request)
           end
         end
 

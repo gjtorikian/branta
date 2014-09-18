@@ -9,6 +9,8 @@ Branta is a Rails app that listens for [`PageBuildEvent`][PageBuildEvent]s sent 
 
 When your page builds successfully, Branta walks over your site and indexes all the content. Branta prefers that you have a *sitemap.xml* file defined at your root, as it makes indexing the content of your site much easier and more reliable (via [sitemap-parser](https://github.com/benbalter/sitemap-parser)). Otherwise, it uses [Anemone](https://github.com/chriskite/anemone) to walk over all your pages.
 
+A *robots.txt* file, if it exists, is respected. The User-Agent is called `Branta`.
+
 ## What does it index?
 
 The following parts of each page are indexed:
@@ -130,9 +132,5 @@ If you're running Branta yourself, you should set the following environment vari
 |`GITHUB_BRANTA_CLIENT_SECRET` | The client secret of your Branta OAuth app instance.
 |`GITHUB_BRANTA_ORG_NAME` | Restricts access to Branta to just users within the `GITHUB_BRANTA_ORG_NAME` GitHub organization.
 | `BRANTA_PER_PAGE_COUNT` | The number of results to return per page. Default is 25, maximum is 50.
-
-### TODO:
-
-- Some kind of "oh shit" reindex everything task
 
 [PageBuildEvent]: https://developer.github.com/v3/activity/events/types/#pagebuildevent
