@@ -1,4 +1,5 @@
 worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)
+listen "/tmp/unicorn.branta.sock"
 timeout 15
 preload_app true
 
