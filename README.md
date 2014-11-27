@@ -128,8 +128,8 @@ If you're running Branta yourself, you should set the following environment vari
 
 |Envrionment variable | Description
 |---------------------|------------
-|`GITHUB_BRANTA_CLIENT_ID` | The client ID of your Branta OAuth app instance.
-|`GITHUB_BRANTA_CLIENT_SECRET` | The client secret of your Branta OAuth app instance.
+|`GITHUB_BRANTA_CLIENT_ID` | **Requred.** The client ID of your Branta OAuth app instance.
+|`GITHUB_BRANTA_CLIENT_SECRET` | **Requred.** The client secret of your Branta OAuth app instance.
 |`GITHUB_BRANTA_ORG_NAME` | Restricts access to Branta to just users within the `GITHUB_BRANTA_ORG_NAME` GitHub organization.
 | `BRANTA_PER_PAGE_COUNT` | The number of results to return per page. Default is 25, maximum is 50.
 
