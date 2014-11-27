@@ -132,5 +132,6 @@ If you're running Branta yourself, you should set the following environment vari
 |`GITHUB_BRANTA_CLIENT_SECRET` | **Requred.** The client secret of your Branta OAuth app instance.
 |`GITHUB_BRANTA_ORG_NAME` | Restricts access to Branta to just users within the `GITHUB_BRANTA_ORG_NAME` GitHub organization.
 | `BRANTA_PER_PAGE_COUNT` | The number of results to return per page. Default is 25, maximum is 50.
+| `BRANTA_WORKING_DIRECTORY` | The directory you'd like to use [as a working directory](http://unicorn.bogomips.org/Unicorn/Configurator.html#method-i-working_directory)
 
 [PageBuildEvent]: https://developer.github.com/v3/activity/events/types/#pagebuildevent

@@ -1,6 +1,6 @@
 # Set the working application directory
 # working_directory "/path/to/your/app"
-working_directory "../public"
+working_directory ENV['BRANTA_WORKING_DIRECTORY'] unless ENV['BRANTA_WORKING_DIRECTORY'].nil?
 
 # Unicorn PID file location
 # pid "/path/to/pids/unicorn.pid"
