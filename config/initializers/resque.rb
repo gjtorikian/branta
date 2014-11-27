@@ -13,6 +13,7 @@ module Branta
                end
 
     Resque.redis = Redis::Namespace.new("#{REDIS_PREFIX}:resque", :redis => @redis)
+    Resque.after_fork = Proc.new { ActiveRecord::Base.establish_connection }
     @redis
   end
 
