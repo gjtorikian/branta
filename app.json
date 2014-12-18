@@ -1,1 +1,6 @@
-{}
+{
+  "name": "Branta",
+  "description": "Search, for GitHub Pages.",
+  "repository": "https://github.com/gjtorikian/branta",
+  "website": "http://branta.io/",
+}
