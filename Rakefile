@@ -5,10 +5,6 @@ require File.expand_path('../config/application', __FILE__)
 
 Branta::Application.load_tasks
 
-task :server do
-  `bundle exec rails s -p 5000`
-end
-
 task "resque:setup" do
   ENV['QUEUE'] = '*'
 end
