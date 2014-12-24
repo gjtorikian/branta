@@ -9,7 +9,7 @@ set :domain, '104.131.112.89'
 set :deploy_to, '/home/deployer/branta'
 set :repository, 'git@github.com:gjtorikian/branta.git'
 set :branch, 'master'
-set :user, 'deployer’
+set :user, 'deployer'
 set :forward_agent, true
 set :port, '22'
 set :unicorn_pid, "#{deploy_to}/shared/pids/unicorn.pid"
