@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 # important stuff
+gem 'foreman', '~> 0.71'
 gem 'rake'
 gem 'rails', '4.1.4'
 gem 'pg', '~> 0.17.1'
@@ -45,7 +46,6 @@ end
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'foreman', '~> 0.71'
   gem 'dotenv-rails'
   gem 'rerun', "~> 0.10"
 end
