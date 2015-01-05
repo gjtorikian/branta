@@ -11,7 +11,7 @@ timeout 30
 working_directory app_dir
 
 # Set up socket location
-listen "#{shared_dir}/sockets/unicorn.sock", :backlog => 64
+listen "/tmp/unicorn.branta.sock"
 
 # Loging
 stderr_path "#{shared_dir}/log/unicorn.stderr.log"
