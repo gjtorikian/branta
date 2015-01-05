@@ -11,7 +11,11 @@ timeout 30
 working_directory app_dir
 
 # Set up socket location
-listen "/tmp/unicorn.branta.sock"
+if ENV["RAILS_ENV"] == "development"
+  listen "/tmp/unicorn.branta.sock"
+else
+  listen "#{shared_dir}/sockets/unicorn.sock", :backlog => 64
+end
 
 # Loging
 stderr_path "#{shared_dir}/log/unicorn.stderr.log"
