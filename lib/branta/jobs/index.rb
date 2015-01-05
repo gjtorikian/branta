@@ -79,7 +79,7 @@ module Branta
 
       def self.domain_name
         "http://" << begin
-          content = Branta::ApiClient.oauth_client_api.contents(repo_name_with_owner, :path => 'CNAME')[:content]
+          content = JSON.parse(Branta::ApiClient.oauth_client_api.contents(repo_name_with_owner, :path => 'CNAME'))['content']
           Base64.decode64(content).strip
         rescue TypeError, Octokit::NotFound # 404, no CNAME
           "#{repo_owner}.github.io/#{repo_name}"

@@ -9,19 +9,19 @@ describe WebhookController do
   it "should create new Repository when hook is added" do
     assert_equal Repository.all.count, 0
 
-    create_hook = JSON.parse fixture("create_hook")
+    create_hook_json = fixture("create_hook")
 
     stub_request(:post, "https://api.github.com/repos/gjtorikian/branta/hooks").
       with(:body => "{\"name\":\"web\",\"config\":{\"url\":\"http://test.host/post_receive\",\"content_type\":\"json\"},\"events\":[\"page_build\"],\"active\":true}",
            :headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"Octokit Ruby Gem #{octokit_version}"}).
-      to_return(:status => 200, :body => create_hook.symbolize_keys, :headers => {})
+      to_return(:status => 200, :body => create_hook_json, :headers => {})
 
     post :create, name: "gjtorikian/branta", :format => 'json'
 
     assert_equal Repository.all.count, 1
 
     repo = Repository.first
-    assert_equal repo.hook_id, create_hook["id"]
+    assert_equal repo.hook_id, JSON.parse(create_hook_json)["id"]
   end
 
   it "should remove PagesRepository when hook is removed" do

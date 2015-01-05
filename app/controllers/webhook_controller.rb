@@ -16,9 +16,9 @@ class WebhookController < ApplicationController
       }
 
       begin
-        result = create_hook(repo_name, config, options)
+        result = JSON.parse create_hook(repo_name, config, options)
         owner, name = repo_name.split('/')
-        Repository.new(owner: owner, name: name, name_with_owner: repo_name, hook_id: result[:id].to_i).save!
+        Repository.new(owner: owner, name: name, name_with_owner: repo_name, hook_id: result['id']).save!
       rescue Octokit::UnprocessableEntity => e
         # TODO: hook already exists
       end
