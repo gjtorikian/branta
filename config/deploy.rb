@@ -7,7 +7,7 @@ require 'mina/unicorn'
 set :rails_env, 'production'
 set :domain, '104.131.112.89'
 set :deploy_to, '/home/deployer/branta'
-set :repository, 'git@github.com:gjtorikian/branta.git'
+set :repository, 'https://github.com/gjtorikian/branta.git'
 set :branch, 'master'
 set :user, 'deployer'
 set :forward_agent, true
