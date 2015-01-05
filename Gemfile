@@ -55,4 +55,5 @@ end
 group :test, :development do
   gem 'awesome_print'
   gem 'bundler'
+  gem 'pry-byebug'
 end
