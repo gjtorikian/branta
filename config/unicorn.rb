@@ -22,9 +22,11 @@ else
   listen "#{shared_dir}/sockets/unicorn.sock", :backlog => 64
 end
 
-# Loging
-stderr_path "#{shared_dir}/log/unicorn.stderr.log"
-stdout_path "#{shared_dir}/log/unicorn.stdout.log"
+# Logging
+if ENV["RAILS_ENV"] != "development"
+  stderr_path "#{shared_dir}/log/unicorn.stderr.log"
+  stdout_path "#{shared_dir}/log/unicorn.stdout.log"
+end
 
 # Set master PID location
 pid "#{shared_dir}/pids/unicorn.pid"
