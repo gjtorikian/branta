@@ -21,8 +21,22 @@ class PayloadController < ApplicationController
         redirect_to :status => 406, :json => "{}" and return;
       end
 
-      Resque.enqueue(Receiver, event, delivery, data)
-      render :status => 201, :json => "{}"
+      name  = data['repository']['name']
+      owner = data['repository']['owner']['login']
+      repository = Repository.where( \
+            :name => name,
+            :owner => owner,
+            :name_with_owner => "#{name}/#{owner}",
+            :hook_id => data['id'],
+            :repo_id => data['repository']['id']).first_or_create
+
+      if repository.active?
+        repository.save!
+        Resque.enqueue(Branta::Jobs::Index, event, data, repository)
+        render :status => 201, :json => "{}"
+      else
+        Rails.logger.error "Repository is not configured to deploy: #{data['repository']}"
+      end
     else
       render :status => 404, :json => "{}"
     end

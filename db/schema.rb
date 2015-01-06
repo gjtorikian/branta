@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140831070532) do
+ActiveRecord::Schema.define(version: 20150106083205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,12 +19,12 @@ ActiveRecord::Schema.define(version: 20140831070532) do
   create_table "pages_builds", force: true do |t|
     t.string   "status"
     t.string   "guid"
-    t.string   "name"
-    t.string   "name_with_owner"
-    t.string   "sha"
+    t.string   "name",            null: false
+    t.string   "name_with_owner", null: false
+    t.string   "sha",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "repository_id"
+    t.integer  "repo_id"
     t.string   "pusher"
   end
 
@@ -36,9 +36,11 @@ ActiveRecord::Schema.define(version: 20140831070532) do
     t.datetime "updated_at"
     t.string   "name_with_owner"
     t.integer  "hook_id"
+    t.integer  "repo_id",                        null: false
   end
 
   add_index "repositories", ["name_with_owner"], name: "index_repositories_on_name_with_owner", using: :btree
+  add_index "repositories", ["repo_id"], name: "index_repositories_on_repo_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string  "login",                  null: false

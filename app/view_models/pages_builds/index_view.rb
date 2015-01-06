@@ -6,10 +6,10 @@ module PagesBuilds
     end
 
     def empty_for_user?(user)
-      repo_ids = Repository.where(:owner => user.login).pluck(:id)
+      repo_ids = Repository.where(:owner => user.login).pluck(:repo_id)
       return true if repo_ids.empty?
       @user_pages_builds = repo_ids.map do |repo_id|
-        PagesBuild.where(:repository_id => repo_id).limit(50)
+        PagesBuild.where(:repo_id => repo_id.to_i).limit(50)
       end
       @user_pages_builds.empty?
     end

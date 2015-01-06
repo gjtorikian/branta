@@ -70,7 +70,7 @@ module Branta
                           :name_with_owner => repo_name_with_owner,
                           :pusher          => pusher,
                           :sha             => sha,
-                          :repository_id   => @repository["id"])
+                          :repo_id         => @repository['repo_id'])
       end
 
       def self.get_sitemap
