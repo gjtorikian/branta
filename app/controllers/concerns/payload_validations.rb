@@ -42,7 +42,7 @@ module PayloadValidations
         if addresses = Branta.redis.get(source_key)
           JSON.parse(addresses)
         else
-          addresses = JSON.parse(Branta::ApiClient.oauth_client_api.get("/meta"))["hooks"]
+          addresses = JSON.parse(Branta::ApiClient.oauth_client_api.github_meta)["hooks"]
           Branta.redis.set(source_key, JSON.dump(addresses))
           Branta.redis.expire(source_key, default_ttl)
           Rails.logger.info "Refreshed GitHub hook sources"
