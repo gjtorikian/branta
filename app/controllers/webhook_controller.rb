@@ -5,6 +5,7 @@ class WebhookController < ApplicationController
   def create
     respond_to do |format|
       repo_name = params[:name]
+      repo_id = params[:repo_id].to_i
 
       config = {
         :url => "#{request.protocol}#{request.host_with_port}#{post_receive_path}",
@@ -16,9 +17,15 @@ class WebhookController < ApplicationController
       }
 
       begin
-        result = JSON.parse create_hook(repo_name, config, options)
+        data = JSON.parse create_hook(repo_name, config, options)
         owner, name = repo_name.split('/')
-        Repository.new(owner: owner, name: name, name_with_owner: repo_name, hook_id: result['id']).save!
+
+        Repository.new( \
+          :owner => owner,
+          :name => name,
+          :name_with_owner => repo_name,
+          :hook_id => data['id'],
+          :repo_id => repo_id).save!
       rescue Octokit::UnprocessableEntity => e
         # TODO: hook already exists
       end

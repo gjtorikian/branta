@@ -29,7 +29,7 @@
         <td><a href="<%= repo['html_url']%>"><%= repo["full_name"] %></a></td>
         <td>
           <% unless @has_hook %>
-            <%= button_tag "#", :remote => true, :class => 'btn btn-default webhook-button add-hook-button', :'data-repo-name' => repo["full_name"] do %>
+            <%= button_tag "#", :remote => true, :class => 'btn btn-default webhook-button add-hook-button', :'data-repo-name' => repo["full_name"], :'data-repo-id' => repo["id"] do %>
               <%= octicon("zap") %> Let's do this!
             <% end %>
           <% else %>

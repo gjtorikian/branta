@@ -7,7 +7,8 @@ describe PagesBuilds::IndexView do
                :owner => "gjtorikian",
                :name => "branta#{i}",
                :name_with_owner => "gjtorikian/branta#{i}",
-               :hook_id => i * 8
+               :hook_id => i * 8,
+               :repo_id => 111000
              }
       Repository.create hash
     end

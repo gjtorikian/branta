@@ -7,6 +7,7 @@ ready = ->
         type: 'POST'
         data:
           name: el.attr('data-repo-name')
+          id: el.attr('data-repo-id')
         error: (jqXHR, textStatus, errorThrown) ->
           $('body').append "AJAX Error: #{textStatus} #{errorThrown}"
         success: (data, textStatus, jqXHR) =>
