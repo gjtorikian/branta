@@ -44,11 +44,11 @@ module Branta
       end
 
       def self.repo_name
-        @payload["repository"]["name"]
+        @payload['repository']['name']
       end
 
       def self.repo_owner
-        @payload["repository"]["owner"]["login"]
+        @payload['repository']['owner']['login']
       end
 
       def self.repo_name_with_owner
@@ -64,7 +64,7 @@ module Branta
       end
 
       def self.record
-        PagesBuild.create(:status          => "built",
+        PagesBuild.create(:status          => 'built',
                           :guid            => @guid,
                           :name            => repo_name,
                           :name_with_owner => repo_name_with_owner,

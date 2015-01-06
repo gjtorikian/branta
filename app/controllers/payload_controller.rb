@@ -17,7 +17,7 @@ class PayloadController < ApplicationController
         redirect_to :status => 406, :json => "{}" and return;
       end
 
-      if ENV['GITHUB_BRANTA_ORG_NAME'] && data["repository"]["owner"]["login"] != ENV['GITHUB_BRANTA_ORG_NAME']
+      if ENV['GITHUB_BRANTA_ORG_NAME'] && data['repository']['owner']['login'] != ENV['GITHUB_BRANTA_ORG_NAME']
         redirect_to :status => 406, :json => "{}" and return;
       end
 
