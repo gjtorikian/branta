@@ -3,10 +3,12 @@
 
 set -e
 
-if [ "$RAILS_ENV" != "production" ]; then
-  pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
-fi
+export RAILS_ENV="development"
+export RACK_ROOT="$RAILS_ROOT"
+export RACK_ENV="$RAILS_ENV"
+
+pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
 
 echo "==> Running on http://0.0.0.0:5000/ …"
 
-RAILS_ENV=development rerun foreman start
+foreman start

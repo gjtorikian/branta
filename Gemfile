@@ -47,7 +47,6 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'dotenv-rails'
-  gem 'rerun', "~> 0.10"
   gem 'mina'
   gem 'mina-unicorn', :require => false
 end
