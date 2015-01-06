@@ -7,8 +7,9 @@ class WebhookController < ApplicationController
       repo_name = params[:name]
       repo_id = params[:repo_id].to_i
 
+      host_with_port = "#{default_url_options[:host]}:#{default_url_options[:port]}"
       config = {
-        :url => "#{request.protocol}#{request.host_with_port}#{post_receive_path}",
+        :url => "#{request.protocol}#{host_with_port}#{post_receive_path}",
         :content_type => 'json'
       }
       options = {

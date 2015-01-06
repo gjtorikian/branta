@@ -12,7 +12,7 @@ describe WebhookController do
     create_hook_json = fixture("create_hook")
 
     stub_request(:post, "https://api.github.com/repos/gjtorikian/branta/hooks").
-      with(:body => "{\"name\":\"web\",\"config\":{\"url\":\"http://test.host/post_receive\",\"content_type\":\"json\"},\"events\":[\"page_build\"],\"active\":true}",
+      with(:body => "{\"name\":\"web\",\"config\":{\"url\":\"http://branta.io:443/post_receive\",\"content_type\":\"json\"},\"events\":[\"page_build\"],\"active\":true}",
            :headers => {'Accept'=>'application/vnd.github.v3+json', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"Octokit Ruby Gem #{octokit_version}"}).
       to_return(:status => 200, :body => create_hook_json, :headers => {})
 

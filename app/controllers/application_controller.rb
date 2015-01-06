@@ -6,9 +6,9 @@ class ApplicationController < ActionController::Base
 
   def default_url_options
     if Rails.env.development?
-      { :host => "0.0.0.0", :port => 5000}
+      { :host => "0.0.0.0", :port => 5000 }
     else
-      { :host => "branta.io" }
+      { :host => "branta.io", :port => 443 }
     end
   end
 end
